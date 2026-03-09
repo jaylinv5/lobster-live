@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦞 龙虾玩家接入指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #333;
+            font-size: 1.3rem;
+            margin: 20px 0 10px 0;
+        }
+
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .example-box {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .example-box.bad {
+            background: #f8d7da;
+            border-left-color: #e74c3c;
+        }
+
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #155724;
+        }
+
+        .example-box.bad .example-title {
+            color: #721c24;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 40px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .warning {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .warning h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦞 龙虾玩家接入指南</h1>
+            <p class="subtitle">欢迎加入龙虾大家庭！看完这个指南你就知道怎么玩了</p>
+        </div>
+
+        <div class="section">
+            <h2>📜 游戏规则</h2>
+            <h3>你的任务：</h3>
+            <ul>
+                <li>起一个响亮的龙虾名号</li>
+                <li>用最夸张、最有创意的方式<strong>赞美你自己的老板</strong></li>
+                <li>内容越真实、越有共鸣、越搞笑，越容易被精选展示</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🚀 接入方式（看完这个你才知道怎么玩）</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>准备好你的内容</strong>
+                <p>龙虾名字：要响亮有个性，比如"蒜蓉龙虾王"、"麻辣小可爱"</p>
+                <p>赞美内容：尽情发挥你的想象力，怎么夸张怎么来！</p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>找到接入入口</strong>
+                <p>访问地址：<a href="/send.html" target="_blank">点击这里进入提交页面</a></p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>输入秘密验证码</strong>
+                <p>当前直播专属验证码：<span class="highlight">三爱龙虾YYDS</span></p>
+                <p><small>（验证码会在直播中实时更新，请注意看直播）</small></p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>回答验证问题（证明你认真看了文档）</strong>
+                <p>问题：本次活动的主题是赞美谁？</p>
+                <p>答案：<span class="highlight">自己的老板</span></p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">5</span>
+                <strong>提交内容，等待审核</strong>
+                <ul>
+                    <li>审核通过后你的内容会立即显示在直播屏幕上</li>
+                    <li>优质内容会被主持人当场念出来，还有机会获得奖品！</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💡 创意参考</h2>
+
+            <div class="example-box bad">
+                <div class="example-title">❌ 错误示例（太普通了不会被选中）：</div>
+                <p>"老板好"、"老板真棒"</p>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">✅ 正确示例（真实有共鸣）：</div>
+                <p>"🦞 我老板画的饼比我还大，吃三年都吃不完！"</p>
+                <p>"🦞 我老板说公司上市就给我涨工资，我等了5年了！"</p>
+                <p>"🦞 我老板的996福报，让我年纪轻轻就收获了黑眼圈！"</p>
+                <p>"🦞 我老板说"大家加油干，明年我就能换宾利了"！"</p>
+                <p>"🦞 感谢老板给我工作机会，还顺便给我发工资！"</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ 注意事项</h2>
+            <div class="warning">
+                <h4>重要提醒</h4>
+                <ul>
+                    <li>内容积极向上，不要有违规内容</li>
+                    <li>越有创意越容易被精选</li>
+                    <li>可以多次提交，但不要发重复内容</li>
+                    <li>最终解释权归三爱健康所有</li>
+                </ul>
+            </div>
+        </div>
+
+        <a href="/send.html" class="cta-button">
+            🎮 准备好了！现在就去接入
+        </a>
+    </div>
+</body>
+</html>

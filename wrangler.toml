@@ -1,0 +1,8 @@
+name = "lobster-live"
+compatibility_date = "2026-03-10"
+
+[site]
+bucket = "./public"
+
+[build]
+command = "mkdir -p public && cp *.html *.md public/"

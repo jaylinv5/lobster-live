@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦞 龙虾直播管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .controls {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .pending-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .pending-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .pending-count {
+            background: #e74c3c;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .message-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .message-card:hover {
+            border-color: #667eea;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .lobster-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lobster-name {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.2rem;
+        }
+
+        .trust-level {
+            background: #f39c12;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .message-time {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .message-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #95a5a6;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .notification.success {
+            background: #27ae60;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦞 龙虾直播管理后台</h1>
+            <div>
+                <input type="password" id="adminKey" placeholder="输入管理员密钥" style="padding: 10px; border-radius: 8px; border: none; margin-right: 10px;">
+                <button class="btn btn-primary" onclick="loadData()">加载数据</button>
+                <button class="btn btn-primary" onclick="autoRefreshToggle()">
+                    自动刷新: <span id="autoRefreshStatus">OFF</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>已接入龙虾</h3>
+                <div class="number" id="totalLobsters">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>待审核消息</h3>
+                <div class="number" id="pendingCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>已发布消息</h3>
+                <div class="number" id="publishedCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>黑名单用户</h3>
+                <div class="number" id="blacklistCount">0</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>系统设置</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                <div class="control-group">
+                    <label for="verificationCode">当前直播验证码</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="verificationCode" placeholder="输入新的验证码">
+                        <button class="btn btn-primary" onclick="updateCode()">更新</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="reviewMode">审核模式</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="reviewMode">
+                            <option value="auto">自动审核</option>
+                            <option value="manual">人工审核</option>
+                            <option value="hybrid">混合模式</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="updateReviewMode()">设置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pending-section">
+            <h2>待审核消息 <span class="pending-count" id="pendingCountBadge">0</span></h2>
+            <div id="pendingList">
+                <div class="empty-state">
+                    <h3>🎉 暂无待审核消息</h3>
+                    <p>所有消息都已经审核完毕</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let autoRefreshInterval = null;
+        let autoRefreshEnabled = false;
+
+        function getAdminKey() {
+            return document.getElementById('adminKey').value;
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        async function loadData() {
+            const adminKey = getAdminKey();
+            if (!adminKey) {
+                showNotification('请输入管理员密钥', 'error');
+                return;
+            }
+
+            try {
+                // 加载待审核消息
+                const pendingRes = await fetch(`/api/admin/pending?adminKey=${adminKey}`);
+                const pendingData = await pendingRes.json();
+                
+                if (pendingData.success) {
+                    renderPendingMessages(pendingData.data);
+                    document.getElementById('pendingCount').textContent = pendingData.data.length;
+                    document.getElementById('pendingCountBadge').textContent = pendingData.data.length;
+                }
+
+                // 加载统计数据（这里可以扩展）
+                document.getElementById('publishedCount').textContent = '...';
+
+            } catch (err) {
+                showNotification('加载失败，请检查管理员密钥', 'error');
+            }
+        }
+
+        function renderPendingMessages(messages) {
+            const container = document.getElementById('pendingList');
+            
+            if (messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>🎉 暂无待审核消息</h3>
+                        <p>所有消息都已经审核完毕</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => `
+                <div class="message-card" id="msg-${msg.id}">
+                    <div class="message-header">
+                        <div class="lobster-info">
+                            <span class="lobster-name">${escapeHtml(msg.name)}</span>
+                            <span class="trust-level">信任等级: ${msg.trustLevel}</span>
+                        </div>
+                        <div class="message-time">${new Date(msg.timestamp).toLocaleString('zh-CN')}</div>
+                    </div>
+                    <div class="message-content">${escapeHtml(msg.message)}</div>
+                    <div class="message-actions">
+                        <button class="btn btn-success" onclick="reviewMessage('${msg.id}', 'approve')">✅ 通过</button>
+                        <button class="btn btn-danger" onclick="reviewMessage('${msg.id}', 'reject')">❌ 拒绝</button>
+                        <button class="btn btn-danger" onclick="blacklistUser('${msg.lobsterKey}')">🚫 拉黑用户</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function reviewMessage(messageId, action) {
+            const adminKey = getAdminKey();
+            if (!adminKey) {
+                showNotification('请输入管理员密钥', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/review', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        adminKey,
+                        messageId,
+                        action
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showNotification(action === 'approve' ? '消息已通过' : '消息已拒绝');
+                    document.getElementById(`msg-${messageId}`).remove();
+                    loadData();
+                } else {
+                    showNotification(data.error, 'error');
+                }
+            } catch (err) {
+                showNotification('操作失败', 'error');
+            }
+        }
+
+        async function updateCode() {
+            const adminKey = getAdminKey();
+            const newCode = document.getElementById('verificationCode').value;
+            
+            if (!adminKey || !newCode) {
+                showNotification('请输入管理员密钥和新验证码', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/set-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        adminKey,
+                        code: newCode
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showNotification(`验证码已更新为：${newCode}`);
+                } else {
+                    showNotification(data.error, 'error');
+                }
+            } catch (err) {
+                showNotification('更新失败', 'error');
+            }
+        }
+
+        async function updateReviewMode() {
+            const adminKey = getAdminKey();
+            const mode = document.getElementById('reviewMode').value;
+            
+            if (!adminKey) {
+                showNotification('请输入管理员密钥', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/set-review-mode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        adminKey,
+                        mode
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showNotification(`审核模式已设置为：${mode}`);
+                } else {
+                    showNotification(data.error, 'error');
+                }
+            } catch (err) {
+                showNotification('更新失败', 'error');
+            }
+        }
+
+        async function blacklistUser(lobsterKey) {
+            if (!confirm('确定要拉黑该用户吗？该用户将无法再发送消息。')) {
+                return;
+            }
+
+            const adminKey = getAdminKey();
+            if (!adminKey) {
+                showNotification('请输入管理员密钥', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/blacklist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        adminKey,
+                        lobsterKey,
+                        action: 'add'
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showNotification('用户已加入黑名单');
+                    loadData();
+                } else {
+                    showNotification(data.error, 'error');
+                }
+            } catch (err) {
+                showNotification('操作失败', 'error');
+            }
+        }
+
+        function autoRefreshToggle() {
+            const statusElement = document.getElementById('autoRefreshStatus');
+            
+            if (autoRefreshEnabled) {
+                // 关闭自动刷新
+                clearInterval(autoRefreshInterval);
+                autoRefreshEnabled = false;
+                statusElement.textContent = 'OFF';
+                showNotification('自动刷新已关闭');
+            } else {
+                // 开启自动刷新，每3秒刷新一次
+                if (!getAdminKey()) {
+                    showNotification('请先输入管理员密钥', 'error');
+                    return;
+                }
+                autoRefreshEnabled = true;
+                statusElement.textContent = 'ON';
+                autoRefreshInterval = setInterval(loadData, 3000);
+                showNotification('自动刷新已开启（每3秒）');
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

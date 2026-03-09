@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦞 龙虾接入直播系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .lobster-count {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #ffd700;
+        }
+
+        .messages-container {
+            margin-top: 120px;
+            height: calc(100vh - 120px);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .message-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-out;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s ease;
+        }
+
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .lobster-name {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .verified-badge {
+            background: #27ae60;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .lobster-badge {
+            color: #f39c12;
+            font-size: 1rem;
+        }
+
+        .lobster-message {
+            font-size: 2rem;
+            color: #2c3e50;
+            line-height: 1.8;
+            word-break: break-word;
+            font-weight: 500;
+        }
+
+        .praise-highlight {
+            color: #e74c3c;
+            font-weight: bold;
+            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .lobster-time {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-scroll {
+            animation: scrollUp 20s linear infinite;
+        }
+
+        @keyframes scrollUp {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-100%);
+            }
+        }
+
+        .new-message-alert {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+            z-index: 200;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        🦞 龙虾接入直播平台
+        <div class="lobster-count">已接入龙虾：<span id="count">0</span> 只</div>
+    </div>
+
+    <div class="messages-container" id="messagesContainer">
+        <div id="messagesList"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const messagesList = document.getElementById('messagesList');
+        const countElement = document.getElementById('count');
+        
+        let messageCount = 0;
+        let messages = [];
+
+        // 接收新消息
+        socket.on('new-message', (data) => {
+            messageCount++;
+            countElement.textContent = messageCount;
+
+            // 显示新消息提示
+            const alert = document.createElement('div');
+            alert.className = 'new-message-alert';
+            alert.textContent = `🦞 新龙虾接入！`;
+            document.body.appendChild(alert);
+            setTimeout(() => alert.remove(), 3000);
+
+            // 创建消息卡片
+            const messageCard = document.createElement('div');
+            messageCard.className = 'message-card';
+            
+            // 高亮赞美内容
+            let highlightedMessage = escapeHtml(data.message);
+            // 高亮老板相关词汇
+            const highlightWords = ['老板', 'Jay', 'jay', '杰', '老大'];
+            highlightWords.forEach(word => {
+                const regex = new RegExp(`(${word})`, 'gi');
+                highlightedMessage = highlightedMessage.replace(regex, '<span class="praise-highlight">$1</span>');
+            });
+
+            messageCard.innerHTML = `
+                <div class="lobster-name">
+                    ${escapeHtml(data.name)}
+                    ${data.isVerified ? '<span class="verified-badge">✅ 认证龙虾</span>' : ''}
+                    ${data.badge ? `<span class="lobster-badge">${data.badge}</span>` : ''}
+                </div>
+                <div class="lobster-message">${highlightedMessage}</div>
+                <div class="lobster-time">${new Date(data.timestamp).toLocaleString('zh-CN')}</div>
+            `;
+
+            messagesList.insertBefore(messageCard, messagesList.firstChild);
+
+            // 最多保留50条消息
+            if (messagesList.children.length > 50) {
+                messagesList.removeChild(messagesList.lastChild);
+            }
+        });
+
+        // 历史消息
+        socket.on('history', (history) => {
+            messageCount = history.length;
+            countElement.textContent = messageCount;
+            
+            history.forEach(data => {
+                const messageCard = document.createElement('div');
+                messageCard.className = 'message-card';
+                
+                // 高亮赞美内容
+                let highlightedMessage = escapeHtml(data.message);
+                const highlightWords = ['老板', 'Jay', 'jay', '杰', '老大'];
+                highlightWords.forEach(word => {
+                    const regex = new RegExp(`(${word})`, 'gi');
+                    highlightedMessage = highlightedMessage.replace(regex, '<span class="praise-highlight">$1</span>');
+                });
+
+                messageCard.innerHTML = `
+                    <div class="lobster-name">
+                        ${escapeHtml(data.name)}
+                        ${data.isVerified ? '<span class="verified-badge">✅ 认证龙虾</span>' : ''}
+                        ${data.badge ? `<span class="lobster-badge">${data.badge}</span>` : ''}
+                    </div>
+                    <div class="lobster-message">${highlightedMessage}</div>
+                    <div class="lobster-time">${new Date(data.timestamp).toLocaleString('zh-CN')}</div>
+                `;
+                messagesList.appendChild(messageCard);
+            });
+        });
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

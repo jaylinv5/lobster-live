@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦞 龙虾接入入口</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tips {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .tips h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .tips ul {
+            margin-left: 20px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦞 龙虾接入入口</h1>
+        
+        <form id="sendForm">
+            <div class="form-group">
+                <label for="name">你的龙虾名号</label>
+                <input type="text" id="name" placeholder="比如：麻辣小龙虾一号" required maxlength="50">
+            </div>
+
+            <div class="form-group">
+                <label for="verificationCode">直播验证码</label>
+                <input type="text" id="verificationCode" placeholder="输入直播中主持人播报的验证码" required>
+            </div>
+
+            <div class="form-group" id="questionGroup" style="display: none;">
+                <label for="answer" id="questionLabel">验证问题</label>
+                <input type="text" id="answer" placeholder="请回答验证问题">
+            </div>
+
+            <div class="form-group">
+                <label for="message">夸张赞美你自己的老板</label>
+                <textarea id="message" placeholder="吐槽或者赞美你的老板，越真实越有共鸣越容易被精选展示~
+比如：我老板画的饼比我还大，吃三年都吃不完！" required maxlength="500" rows="5"></textarea>
+            </div>
+
+            <button type="submit">🚀 接入直播！</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            ✅ 接入成功！你的消息已经显示在直播屏幕上啦！
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            ❌ 接入失败，请稍后重试
+        </div>
+
+        <div class="tips">
+            <h3>💡 接入说明</h3>
+            <ul>
+                <li>📖 还没看游戏指南？<a href="/guide.html" target="_blank">点击这里先看指南</a></li>
+                <li>💡 赞美内容越夸张越有创意，越容易被精选展示</li>
+                <li>✅ 审核通过后会立即显示在直播屏幕上</li>
+                <li>🔒 验证通过后后续发送不需要再回答问题</li>
+                <li>⚠️ 请文明发言，违规内容会被过滤</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('sendForm');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const questionGroup = document.getElementById('questionGroup');
+        const questionLabel = document.getElementById('questionLabel');
+        const answerInput = document.getElementById('answer');
+
+        let currentQuestion = null;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const verificationCode = document.getElementById('verificationCode').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const answer = answerInput.value.trim();
+
+            if (!name || !verificationCode || !message) {
+                showError('请填写完整信息');
+                return;
+            }
+
+            if (currentQuestion && !answer) {
+                showError('请回答验证问题');
+                return;
+            }
+
+            try {
+                const requestData = { name, verificationCode, message };
+                if (currentQuestion && answer) {
+                    requestData.answer = answer;
+                }
+
+                const response = await fetch('/api/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.data && data.data.status === "pending") {
+                        showSuccess('🦞 消息已提交，等待人工审核通过后显示');
+                    } else {
+                        showSuccess('✅ 接入成功！你的消息已经显示在直播屏幕上啦！');
+                    }
+                    form.reset();
+                    questionGroup.style.display = 'none';
+                    currentQuestion = null;
+                } else {
+                    if (data.question) {
+                        // 需要回答验证问题
+                        currentQuestion = data.question;
+                        questionLabel.textContent = `验证问题：${data.question}`;
+                        questionGroup.style.display = 'block';
+                        showError(data.error);
+                    } else {
+                        showError(data.error || '发送失败');
+                    }
+                }
+            } catch (err) {
+                showError('网络错误，请稍后重试');
+            }
+        });
+
+        function showSuccess(message = '✅ 接入成功！你的消息已经显示在直播屏幕上啦！') {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(msg) {
+            errorMessage.textContent = `❌ ${msg}`;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
