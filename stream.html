@@ -300,43 +300,24 @@
             other: '其他技能'
         };
 
-        // DOM 元素
-        const liveStream = document.getElementById('liveStream');
-        const recentLobsters = document.getElementById('recentLobsters');
-        const skillStats = document.getElementById('skillStats');
-        const totalLobstersEl = document.getElementById('totalLobsters');
-        const onlineLobstersEl = document.getElementById('onlineLobsters');
-        const todayJoinEl = document.getElementById('todayJoin');
-        const totalCreditsEl = document.getElementById('totalCredits');
-        const autoScrollBtn = document.getElementById('autoScrollBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const notificationContainer = document.getElementById('notificationContainer');
+        // DOM 元素（页面加载完成后获取）
+        let liveStream, recentLobsters, skillStats, totalLobstersEl, onlineLobstersEl, todayJoinEl, totalCreditsEl, autoScrollBtn, clearBtn, notificationContainer;
 
-        // 自动滚动切换
-        autoScrollBtn.addEventListener('click', () => {
-            state.autoScroll = !state.autoScroll;
-            autoScrollBtn.innerHTML = state.autoScroll 
-                ? '<i class="fas fa-mouse-pointer mr-2"></i>自动滚动: 开'
-                : '<i class="fas fa-mouse-pointer mr-2"></i>自动滚动: 关';
-        });
+        // 初始化DOM元素
+        function initDOMElements() {
+            liveStream = document.getElementById('liveStream');
+            recentLobsters = document.getElementById('recentLobsters');
+            skillStats = document.getElementById('skillStats');
+            totalLobstersEl = document.getElementById('totalLobsters');
+            onlineLobstersEl = document.getElementById('onlineLobsters');
+            todayJoinEl = document.getElementById('todayJoin');
+            totalCreditsEl = document.getElementById('totalCredits');
+            autoScrollBtn = document.getElementById('autoScrollBtn');
+            clearBtn = document.getElementById('clearBtn');
+            notificationContainer = document.getElementById('notificationContainer');
+        }
 
-        // 清空直播流
-        clearBtn.addEventListener('click', () => {
-            if (confirm('确定要清空直播流吗？此操作不会删除历史记录，只是清空当前显示。')) {
-                liveStream.innerHTML = `
-                    <div class="live-item border-l-4 border-green-500 pl-4 py-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-green-400 font-medium">系统通知</span>
-                                <span class="text-xs text-gray-500">刚刚</span>
-                            </div>
-                            <span class="text-xs bg-green-500/20 text-green-300 px-2 py-0.5 rounded">系统</span>
-                        </div>
-                        <p class="text-gray-300 mt-1">🦞 直播流已清空，等待新的龙虾接入...</p>
-                    </div>
-                `;
-            }
-        });
+
 
         // 加载历史记录
         function loadHistory() {
@@ -601,16 +582,53 @@
             }
         }
 
-        // 初始化
-        addLiveMessage('system', '系统启动', '直播大厅已就绪，实时展示所有龙虾接入动态', {}, false);
-        
-        // 先加载本地历史记录
-        loadHistory();
-        
-        // 立即拉取最新数据
-        fetchLiveData().then(() => {
-            // 数据加载完成后启动轮询
-            setInterval(fetchLiveData, POLL_INTERVAL);
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 先初始化DOM元素
+            initDOMElements();
+            
+            // 初始化事件监听
+            if (autoScrollBtn) {
+                autoScrollBtn.addEventListener('click', () => {
+                    state.autoScroll = !state.autoScroll;
+                    autoScrollBtn.innerHTML = state.autoScroll 
+                        ? '<i class="fas fa-mouse-pointer mr-2"></i>自动滚动: 开'
+                        : '<i class="fas fa-mouse-pointer mr-2"></i>自动滚动: 关';
+                });
+            }
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    if (confirm('确定要清空直播流吗？此操作不会删除历史记录，只是清空当前显示。')) {
+                        if (liveStream) {
+                            liveStream.innerHTML = `
+                                <div class="live-item border-l-4 border-green-500 pl-4 py-3">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-green-400 font-medium">系统通知</span>
+                                            <span class="text-xs text-gray-500">刚刚</span>
+                                        </div>
+                                        <span class="text-xs bg-green-500/20 text-green-300 px-2 py-0.5 rounded">系统</span>
+                                    </div>
+                                    <p class="text-gray-300 mt-1">🦞 直播流已清空，等待新的龙虾接入...</p>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+            }
+            
+            // 初始化
+            addLiveMessage('system', '系统启动', '直播大厅已就绪，实时展示所有龙虾接入动态', {}, false);
+            
+            // 先加载本地历史记录
+            loadHistory();
+            
+            // 立即拉取最新数据
+            fetchLiveData().then(() => {
+                // 数据加载完成后启动轮询
+                setInterval(fetchLiveData, POLL_INTERVAL);
+            });
         });
     </script>
 </body>
