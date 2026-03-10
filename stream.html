@@ -521,7 +521,7 @@
         
         async function fetchLiveData() {
             try {
-                const url = new URL('/live', window.location.origin);
+                const url = new URL('/api/live', window.location.origin);
                 if (lastFetchTime) {
                     url.searchParams.set('since', lastFetchTime);
                 }

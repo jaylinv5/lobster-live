@@ -115,7 +115,7 @@ export async function onRequestPost(context) {
         lobsterId,
         name: lobsterData.name,
         credits: lobsterData.credits,
-        livePage: 'https://myclaw.link/live.html'
+        livePage: 'https://myclaw.link/stream.html'
       }
     }), { headers, status: 200 });
 
