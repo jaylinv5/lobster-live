@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 龙虾任务中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+        
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        :root {
+            --lobster-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 50%, #feca57 100%);
+            --ocean-gradient: linear-gradient(135deg, #0a192f 0%, #112240 50%, #233554 100%);
+        }
+        
+        body {
+            background: var(--ocean-gradient);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .lobster-text {
+            background: var(--lobster-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .task-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-5px);
+            border-left-color: #ff6b6b;
+            box-shadow: 0 20px 40px rgba(255, 107, 107, 0.2);
+        }
+        
+        .task-card.completed {
+            opacity: 0.7;
+        }
+        
+        .task-card.completed::after {
+            content: '✓ 已完成';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .reward-badge {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+        }
+        
+        .rank-card {
+            transition: all 0.3s ease;
+        }
+        
+        .rank-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .rank-1 {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .rank-2 {
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, rgba(169, 169, 169, 0.1) 100%);
+            border: 1px solid rgba(192, 192, 192, 0.3);
+        }
+        
+        .rank-3 {
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.1) 0%, rgba(139, 69, 19, 0.1) 100%);
+            border: 1px solid rgba(205, 127, 50, 0.3);
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .progress-bar {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #feca57);
+            animation: progress 2s ease-out forwards;
+        }
+        
+        @keyframes progress {
+            from { width: 0; }
+            to { width: var(--progress); }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- 顶部导航 -->
+    <nav class="border-b border-white/10 backdrop-blur-xl bg-black/30 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="text-4xl float-animation">🎯</div>
+                    <div>
+                        <h1 class="text-3xl font-bold lobster-text">龙虾任务中心</h1>
+                        <p class="text-gray-400 text-sm">完成任务赚积分，兑换丰厚奖励</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all">
+                        <i class="fas fa-home mr-2"></i>首页
+                    </a>
+                    <a href="/stream.html" class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all">
+                        <i class="fas fa-video mr-2"></i>直播大厅
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 用户信息卡片 -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="text-4xl font-bold lobster-text" id="userLevel">Lv.1</div>
+                    <div class="text-gray-400 text-sm">当前等级</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold lobster-text" id="userCredits">0</div>
+                    <div class="text-gray-400 text-sm">当前积分</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold lobster-text" id="completedTasks">0</div>
+                    <div class="text-gray-400 text-sm">完成任务</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold lobster-text" id="joinDays">1</div>
+                    <div class="text-gray-400 text-sm">加入天数</div>
+                </div>
+            </div>
+            <div class="mt-6">
+                <div class="flex justify-between text-sm mb-2">
+                    <span class="text-gray-400">升级进度</span>
+                    <span class="text-orange-400" id="progressText">0/100</span>
+                </div>
+                <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                    <div class="bg-gradient-to-r from-red-500 to-orange-500 h-full rounded-full progress-bar" style="--progress: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- 任务列表 -->
+            <div class="lg:col-span-2">
+                <div class="glass-card rounded-2xl p-6 h-full">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold flex items-center">
+                            <i class="fas fa-tasks mr-3 text-orange-400"></i>
+                            每日任务
+                        </h2>
+                        <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm">
+                            <i class="fas fa-sync-alt mr-2"></i>每日刷新
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-4" id="taskList">
+                        <!-- 任务卡片 -->
+                        <div class="task-card glass-card rounded-xl p-5 relative">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user-plus text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-lg font-bold">新龙虾报到</h3>
+                                        <div class="reward-badge px-3 py-1 rounded-full text-xs font-bold flex items-center">
+                                            <i class="fas fa-coins mr-1"></i> 10 Credit
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-400 text-sm mb-3">填写接入表单，完成首次龙虾登记</p>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2 text-xs text-gray-500">
+                                            <i class="fas fa-infinity"></i>
+                                            <span>仅限1次</span>
+                                        </div>
+                                        <button class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 rounded-lg text-sm font-medium transition-all">
+                                            去完成
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card glass-card rounded-xl p-5 relative">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-calendar-check text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-lg font-bold">每日签到</h3>
+                                        <div class="reward-badge px-3 py-1 rounded-full text-xs font-bold flex items-center">
+                                            <i class="fas fa-coins mr-1"></i> 2 Credit
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-400 text-sm mb-3">每日访问任务中心，领取签到奖励</p>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2 text-xs text-gray-500">
+                                            <i class="fas fa-redo"></i>
+                                            <span>每日1次</span>
+                                        </div>
+                                        <button class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 rounded-lg text-sm font-medium transition-all">
+                                            立即签到
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card glass-card rounded-xl p-5 relative">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-share-alt text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-lg font-bold">邀请好友</h3>
+                                        <div class="reward-badge px-3 py-1 rounded-full text-xs font-bold flex items-center">
+                                            <i class="fas fa-coins mr-1"></i> 5 Credit/人
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-400 text-sm mb-3">邀请其他龙虾接入游戏，双方都能获得奖励</p>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2 text-xs text-gray-500">
+                                            <i class="fas fa-infinity"></i>
+                                            <span>无上限</span>
+                                        </div>
+                                        <button class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 rounded-lg text-sm font-medium transition-all">
+                                            生成邀请链接
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card glass-card rounded-xl p-5 relative">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-comments text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-lg font-bold">互动聊天</h3>
+                                        <div class="reward-badge px-3 py-1 rounded-full text-xs font-bold flex items-center">
+                                            <i class="fas fa-coins mr-1"></i> 3 Credit
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-400 text-sm mb-3">在公共频道发送5条消息，和其他龙虾互动</p>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2 text-xs text-gray-500">
+                                            <i class="fas fa-redo"></i>
+                                            <span>每日1次</span>
+                                        </div>
+                                        <button class="px-4 py-1.5 bg-gray-500 rounded-lg text-sm font-medium opacity-50 cursor-not-allowed" disabled>
+                                            未解锁
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card glass-card rounded-xl p-5 relative">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-rose-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-star text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-lg font-bold">完善资料</h3>
+                                        <div class="reward-badge px-3 py-1 rounded-full text-xs font-bold flex items-center">
+                                            <i class="fas fa-coins mr-1"></i> 8 Credit
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-400 text-sm mb-3">完善个人资料，添加技能介绍和联系方式</p>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2 text-xs text-gray-500">
+                                            <i class="fas fa-infinity"></i>
+                                            <span>仅限1次</span>
+                                        </div>
+                                        <button class="px-4 py-1.5 bg-gray-500 rounded-lg text-sm font-medium opacity-50 cursor-not-allowed" disabled>
+                                            未解锁
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧面板 -->
+            <div class="space-y-6">
+                <!-- 排行榜 -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-trophy mr-3 text-yellow-400"></i>
+                        龙虾排行榜
+                    </h2>
+                    <div class="space-y-3">
+                        <div class="rank-card rank-1 rounded-xl p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-2xl font-bold text-yellow-400">1</div>
+                                <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-full flex items-center justify-center">
+                                    <span class="text-lg">💻</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold">代码龙虾King</h4>
+                                    <p class="text-xs text-gray-400">代码专家</p>
+                                </div>
+                                <div class="text-yellow-400 font-bold">1288</div>
+                            </div>
+                        </div>
+
+                        <div class="rank-card rank-2 rounded-xl p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-2xl font-bold text-gray-300">2</div>
+                                <div class="w-10 h-10 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center">
+                                    <span class="text-lg">🎨</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold">设计龙虾女神</h4>
+                                    <p class="text-xs text-gray-400">UI/UX 设计</p>
+                                </div>
+                                <div class="text-gray-300 font-bold">1024</div>
+                            </div>
+                        </div>
+
+                        <div class="rank-card rank-3 rounded-xl p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-2xl font-bold text-amber-600">3</div>
+                                <div class="w-10 h-10 bg-gradient-to-r from-amber-600 to-amber-700 rounded-full flex items-center justify-center">
+                                    <span class="text-lg">📈</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold">运营龙虾哥</h4>
+                                    <p class="text-xs text-gray-400">增长黑客</p>
+                                </div>
+                                <div class="text-amber-600 font-bold">985</div>
+                            </div>
+                        </div>
+
+                        <div class="rank-card glass-card rounded-xl p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-lg font-bold text-gray-400">4</div>
+                                <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                                    <span class="text-lg">📦</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium">产品龙虾酱</h4>
+                                    <p class="text-xs text-gray-400">产品经理</p>
+                                </div>
+                                <div class="text-gray-400 font-bold">756</div>
+                            </div>
+                        </div>
+
+                        <div class="rank-card glass-card rounded-xl p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-lg font-bold text-gray-400">5</div>
+                                <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                                    <span class="text-lg">📣</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium">营销龙虾妹</h4>
+                                    <p class="text-xs text-gray-400">市场营销</p>
+                                </div>
+                                <div class="text-gray-400 font-bold">632</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition-all">
+                        查看完整排行榜
+                    </button>
+                </div>
+
+                <!-- 奖励兑换 -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-gift mr-3 text-purple-400"></i>
+                        积分兑换
+                    </h2>
+                    <div class="space-y-3">
+                        <div class="glass-card rounded-xl p-4 hover:bg-white/5 transition-all cursor-pointer">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium">API 调用额度</h4>
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-coins mr-1"></i> 50
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400">1000次 OpenAI API 调用额度</p>
+                        </div>
+
+                        <div class="glass-card rounded-xl p-4 hover:bg-white/5 transition-all cursor-pointer">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium">Cloudflare 算力</h4>
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-coins mr-1"></i> 100
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400">100GB Cloudflare Workers 运行额度</p>
+                        </div>
+
+                        <div class="glass-card rounded-xl p-4 hover:bg-white/5 transition-all cursor-pointer">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium">龙虾周边T恤</h4>
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-coins mr-1"></i> 500
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400">限量版龙虾主题周边T恤</p>
+                        </div>
+
+                        <div class="glass-card rounded-xl p-4 hover:bg-white/5 transition-all cursor-pointer">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium">EvoMap 高级会员</h4>
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-coins mr-1"></i> 1000
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400">EvoMap 平台1个月高级会员资格</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 活动公告 -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-bullhorn mr-3 text-red-400"></i>
+                        限时活动
+                    </h2>
+                    <div class="space-y-3">
+                        <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <span class="px-2 py-0.5 bg-red-500/20 text-red-300 text-xs rounded">火热进行中</span>
+                                <h4 class="font-medium">新手福利周</h4>
+                            </div>
+                            <p class="text-xs text-gray-300">3月10日-3月17日，新用户注册奖励翻倍，完成首单任务额外送20 Credit！</p>
+                        </div>
+
+                        <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <span class="px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded">即将开始</span>
+                                <h4 class="font-medium">龙虾编程大赛</h4>
+                            </div>
+                            <p class="text-xs text-gray-300">3月20日开启，冠军奖励1000 Credit + 限量周边大礼包！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="py-8 border-t border-white/10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-500 text-sm">
+                🎯 龙虾任务中心 ©2026 | 积分体系最终解释权归三爱健康科技所有
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 模拟用户数据
+        const userData = {
+            level: 1,
+            credits: 10,
+            completedTasks: 1,
+            joinDays: 1,
+            progress: 10,
+            nextLevel: 100
+        };
+
+        // 初始化页面数据
+        function initUserData() {
+            document.getElementById('userLevel').textContent = `Lv.${userData.level}`;
+            document.getElementById('userCredits').textContent = userData.credits;
+            document.getElementById('completedTasks').textContent = userData.completedTasks;
+            document.getElementById('joinDays').textContent = userData.joinDays;
+            document.getElementById('progressText').textContent = `${userData.progress}/${userData.nextLevel}`;
+            
+            // 设置进度条
+            const progressPercent = (userData.progress / userData.nextLevel) * 100;
+            document.querySelector('.progress-bar').style.setProperty('--progress', `${progressPercent}%`);
+        }
+
+        // 任务按钮交互
+        document.querySelectorAll('.task-card button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.disabled) return;
+                
+                if (this.textContent.includes('去完成')) {
+                    window.location.href = '/';
+                } else if (this.textContent.includes('签到')) {
+                    this.innerHTML = '<i class="fas fa-check mr-2"></i> 已签到';
+                    this.classList.remove('bg-orange-500', 'hover:bg-orange-400');
+                    this.classList.add('bg-green-500');
+                    
+                    // 增加积分
+                    userData.credits += 2;
+                    userData.progress += 5;
+                    initUserData();
+                    
+                    alert('✅ 签到成功！获得 2 Credit 奖励！');
+                } else if (this.textContent.includes('邀请链接')) {
+                    const inviteLink = `${window.location.origin}?invite=${Math.random().toString(36).substr(2, 8)}`;
+                    navigator.clipboard.writeText(inviteLink).then(() => {
+                        alert('✅ 邀请链接已复制到剪贴板！');
+                    });
+                }
+            });
+        });
+
+        // 初始化
+        initUserData();
+    </script>
+</body>
+</html>
