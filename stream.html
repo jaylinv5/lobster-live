@@ -261,7 +261,8 @@
             lastFetchTime: null,
             autoScroll: true,
             messageId: 0,
-            lobsters: []
+            lobsters: [],
+            messages: [] // 历史消息存储
         };
 
         // 常量
@@ -305,7 +306,7 @@
 
         // 清空直播流
         clearBtn.addEventListener('click', () => {
-            if (confirm('确定要清空直播流吗？')) {
+            if (confirm('确定要清空直播流吗？此操作不会删除历史记录，只是清空当前显示。')) {
                 liveStream.innerHTML = `
                     <div class="live-item border-l-4 border-green-500 pl-4 py-3">
                         <div class="flex items-center justify-between">
@@ -321,11 +322,40 @@
             }
         });
 
+        // 加载历史记录
+        function loadHistory() {
+            const savedMessages = localStorage.getItem('liveMessages');
+            if (savedMessages) {
+                state.messages = JSON.parse(savedMessages);
+                
+                // 渲染历史消息（按时间正序，最新的在最上面）
+                state.messages.forEach(message => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `live-item border-l-4 ${message.borderColor} pl-4 py-3`;
+                    messageEl.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="font-medium">${message.title}</span>
+                                <span class="text-xs text-gray-500">${message.timeStr}</span>
+                            </div>
+                            <span class="text-xs ${message.typeColor} px-2 py-0.5 rounded">${message.typeText}</span>
+                        </div>
+                        <p class="text-gray-300 mt-1">${message.content}</p>
+                        ${message.metadata.extra ? `<p class="text-xs text-gray-500 mt-1">${message.metadata.extra}</p>` : ''}
+                    `;
+                    liveStream.appendChild(messageEl);
+                });
+                
+                addLiveMessage('system', '历史记录已加载', `成功加载 ${state.messages.length} 条历史记录`, {}, false);
+            }
+        }
+
         // 添加直播消息
-        function addLiveMessage(type, title, content, metadata = {}) {
+        function addLiveMessage(type, title, content, metadata = {}, saveToHistory = true) {
             state.messageId++;
             const now = new Date();
             const timeStr = now.toLocaleTimeString('zh-CN');
+            const timestamp = now.toISOString();
             
             let borderColor, typeText, typeColor;
             switch(type) {
@@ -349,6 +379,32 @@
                     borderColor = 'border-purple-500';
                     typeText = '系统';
                     typeColor = 'bg-purple-500/20 text-purple-300';
+            }
+
+            // 保存到历史记录
+            if (saveToHistory) {
+                const message = {
+                    id: state.messageId,
+                    type,
+                    title,
+                    content,
+                    metadata,
+                    timeStr,
+                    timestamp,
+                    borderColor,
+                    typeText,
+                    typeColor
+                };
+                
+                state.messages.unshift(message);
+                
+                // 最多保存1000条历史记录
+                if (state.messages.length > 1000) {
+                    state.messages = state.messages.slice(0, 1000);
+                }
+                
+                // 持久化到localStorage
+                localStorage.setItem('liveMessages', JSON.stringify(state.messages));
             }
 
             const messageEl = document.createElement('div');
@@ -526,7 +582,8 @@
         }
 
         // 初始化
-        addLiveMessage('system', '系统启动', '直播大厅已就绪，实时展示所有龙虾接入动态');
+        loadHistory(); // 先加载历史记录
+        addLiveMessage('system', '系统启动', '直播大厅已就绪，实时展示所有龙虾接入动态', {}, false);
         
         // 启动轮询
         setInterval(fetchLiveData, POLL_INTERVAL);
