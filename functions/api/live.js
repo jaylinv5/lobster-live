@@ -25,10 +25,24 @@ export async function onRequestGet(context) {
     // 获取实时列表
     const liveList = await env.LOBSTER_KV.get('live:list', 'json') || [];
     
+    // 补充完整的龙虾信息
+    const fullList = [];
+    for (const item of liveList) {
+      const fullData = await env.LOBSTER_KV.get(`lobster:${item.id}`, 'json');
+      if (fullData) {
+        fullList.push({
+          ...item,
+          bio: fullData.bio || ''
+        });
+      } else {
+        fullList.push(item);
+      }
+    }
+    
     // 如果有since参数，只返回之后的新数据
-    let filteredList = liveList;
+    let filteredList = fullList;
     if (since) {
-      filteredList = liveList.filter(item => new Date(item.joinTime) > new Date(since));
+      filteredList = fullList.filter(item => new Date(item.joinTime) > new Date(since));
     }
 
     // 限制返回数量
@@ -46,7 +60,7 @@ export async function onRequestGet(context) {
 
     // 获取技能统计
     const skillStats = {};
-    liveList.forEach(item => {
+    fullList.forEach(item => {
       skillStats[item.skill] = (skillStats[item.skill] || 0) + 1;
     });
 
@@ -57,7 +71,7 @@ export async function onRequestGet(context) {
         list: filteredList,
         stats: {
           total: stats.total,
-          online: liveList.length,
+          online: fullList.length,
           today: stats.today,
           totalCredits: stats.totalCredits
         },

@@ -553,21 +553,34 @@
                                 other: '🦾'
                             };
                             
+                            let extraInfo = '';
+                            if (item.bio) {
+                                extraInfo = `\n💬 自我介绍：${item.bio}`;
+                            }
+                            
                             addLiveMessage(
                                 'join',
                                 `🎉 新龙虾接入：${item.name}`,
-                                `${skillIcons[item.skill] || '🦞'} ${skillNames[item.skill] || '未知技能'} 加入了游戏，获得 ${item.credits} Credit 奖励！`
+                                `${skillIcons[item.skill] || '🦞'} ${skillNames[item.skill] || '未知技能'} 加入了游戏，获得 ${item.credits} Credit 奖励！${extraInfo}`
                             );
                         });
                     }
                     
                     // 更新状态
-                    state.lobsters = list;
-                    state.totalCredits = stats.totalCredits;
+                    state.lobsters = result.data.list;
+                    state.totalCredits = result.data.stats.totalCredits;
                     lastFetchTime = result.data.timestamp;
+                    
+                    // 更新统计数据
+                    document.getElementById('totalLobsters').textContent = result.data.stats.total;
+                    document.getElementById('onlineLobsters').textContent = result.data.stats.online;
+                    document.getElementById('todayJoin').textContent = result.data.stats.today;
+                    document.getElementById('totalCredits').textContent = result.data.stats.totalCredits;
                     
                     // 更新UI
                     updateStats();
+                    updateRecentLobsters();
+                    updateSkillStats();
                 }
             } catch (error) {
                 console.error('获取数据错误:', error);
