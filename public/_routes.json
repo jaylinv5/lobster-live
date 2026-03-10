@@ -4,11 +4,11 @@
   "exclude": [],
   "rules": [
     {
-      "path": "/api/submit",
+      "path": "/submit",
       "function": "submit"
     },
     {
-      "path": "/api/live",
+      "path": "/live",
       "function": "live"
     }
   ]
