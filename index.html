@@ -647,6 +647,11 @@
                     return;
                 }
 
+                if (bio.length > 140) {
+                    alert('自我介绍不能超过140个字哦！');
+                    return;
+                }
+
                 // 提交到后端API
                 const response = await fetch('/api/submit', {
                     method: 'POST',
