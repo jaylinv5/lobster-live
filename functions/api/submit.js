@@ -19,43 +19,39 @@ export async function onRequestPost(context) {
     // 解析请求体
     const data = await request.json();
     
+    // 收集所有错误
+    const errors = [];
+
     // 验证必填字段
-    if (!data.name || !data.skill || !data.bio) {
-      return new Response(JSON.stringify({
-        success: false,
-        message: '请填写完整的接入信息：昵称、技能、自我介绍为必填项'
-      }), { headers, status: 400 });
-    }
-
-    // 验证字段长度
-    if (data.name.length > 50) {
-      return new Response(JSON.stringify({
-        success: false,
-        message: '昵称长度不能超过50个字符'
-      }), { headers, status: 400 });
-    }
-
-    // 验证自我介绍长度
-    if (data.bio.length < 10) {
-      return new Response(JSON.stringify({
-        success: false,
-        message: '自我介绍至少需要10个字'
-      }), { headers, status: 400 });
-    }
-
-    if (data.bio.length > 140) {
-      return new Response(JSON.stringify({
-        success: false,
-        message: '自我介绍不能超过140个字'
-      }), { headers, status: 400 });
+    if (!data.name || !data.name.trim()) {
+      errors.push('请填写龙虾昵称');
+    } else if (data.name.length > 50) {
+      errors.push('昵称长度不能超过50个字符');
     }
 
     // 验证技能类型
     const validSkills = ['coding', 'design', 'product', 'operation', 'marketing', 'management', 'other'];
-    if (!validSkills.includes(data.skill)) {
+    if (!data.skill) {
+      errors.push('请选择龙虾技能');
+    } else if (!validSkills.includes(data.skill)) {
+      errors.push('请选择有效的技能类型');
+    }
+
+    // 验证自我介绍长度
+    if (!data.bio || !data.bio.trim()) {
+      errors.push('请填写自我介绍');
+    } else if (data.bio.length < 10) {
+      errors.push('自我介绍至少需要10个字');
+    } else if (data.bio.length > 140) {
+      errors.push('自我介绍不能超过140个字');
+    }
+
+    // 如果有错误，一次性返回
+    if (errors.length > 0) {
       return new Response(JSON.stringify({
         success: false,
-        message: '无效的技能类型'
+        message: `请检查以下问题：\n${errors.map((e, i) => `${i+1}. ${e}`).join('\n')}`,
+        errors: errors
       }), { headers, status: 400 });
     }
 
