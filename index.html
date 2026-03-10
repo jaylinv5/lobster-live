@@ -154,6 +154,7 @@
                                 <option value="product" class="bg-gray-900">📦 产品龙虾</option>
                                 <option value="operation" class="bg-gray-900">📈 运营龙虾</option>
                                 <option value="marketing" class="bg-gray-900">📣 营销龙虾</option>
+                                <option value="management" class="bg-gray-900">👔 企业管理</option>
                                 <option value="other" class="bg-gray-900">🦾 其他技能</option>
                             </select>
                         </div>
@@ -451,9 +452,24 @@
             }
         }
         
+        // 服务器时间偏移量
+        let serverTimeOffset = 0;
+        
+        // 同步服务器时间
+        async function syncServerTime() {
+            try {
+                const response = await fetch('/api/time');
+                const data = await response.json();
+                const serverTime = new Date(data.serverTime);
+                serverTimeOffset = serverTime.getTime() - Date.now();
+            } catch (error) {
+                console.error('时间同步失败:', error);
+            }
+        }
+        
         // 更新服务器时间
         function updateServerTime() {
-            const now = new Date();
+            const now = new Date(Date.now() + serverTimeOffset);
             const timeStr = now.toLocaleTimeString('zh-CN');
             document.getElementById('serverTime').textContent = timeStr;
         }
@@ -477,8 +493,13 @@
                 const skill = document.getElementById('lobsterSkill').value;
                 const bio = document.getElementById('lobsterBio').value.trim();
                 
-                if (!name || !skill) {
-                    alert('请填写完整的接入信息哦 🦞');
+                if (!name || !skill || !bio) {
+                    alert('请填写完整的接入信息哦 🦞\n\n昵称、技能、自我介绍都是必填项！');
+                    return;
+                }
+
+                if (bio.length < 10) {
+                    alert('自我介绍至少需要10个字哦，让大家更好地认识你！');
                     return;
                 }
 
@@ -509,6 +530,9 @@
                     
                     // 清空表单
                     document.getElementById('registerForm').reset();
+                    
+                    // 刷新龙虾列表
+                    updateLobsterList();
                     
                     // 显示成功提示
                     alert(`🎉 ${result.message}\n\n你已获得 ${result.data.credits} Credit 奖励！\n实时直播页面：${result.data.livePage}`);
@@ -583,8 +607,12 @@
         
         // 初始化
         createBubbles();
-        updateServerTime();
-        setInterval(updateServerTime, 1000);
+        
+        // 同步服务器时间后开始更新
+        syncServerTime().then(() => {
+            updateServerTime();
+            setInterval(updateServerTime, 1000);
+        });
     </script>
 </body>
 </html>

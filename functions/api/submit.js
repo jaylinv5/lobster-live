@@ -20,10 +20,18 @@ export async function onRequestPost(context) {
     const data = await request.json();
     
     // 验证必填字段
-    if (!data.name || !data.skill) {
+    if (!data.name || !data.skill || !data.bio) {
       return new Response(JSON.stringify({
         success: false,
-        message: '请填写完整的接入信息：昵称和技能为必填项'
+        message: '请填写完整的接入信息：昵称、技能、自我介绍为必填项'
+      }), { headers, status: 400 });
+    }
+
+    // 验证自我介绍长度
+    if (data.bio.length < 10) {
+      return new Response(JSON.stringify({
+        success: false,
+        message: '自我介绍至少需要10个字'
       }), { headers, status: 400 });
     }
 
