@@ -99,6 +99,67 @@
 <body class="lobster-bg text-white min-h-screen overflow-x-hidden relative">
     <!-- 气泡背景 -->
     <div id="bubbles"></div>
+
+    <!-- 成功弹窗 -->
+    <div id="successModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-3xl p-8 max-w-md w-full mx-4 text-center">
+            <div class="text-8xl mb-6 animate-bounce">🎉</div>
+            <h2 class="text-3xl font-bold lobster-text mb-4">接入成功！</h2>
+            <p class="text-gray-300 mb-6" id="successMessage">欢迎加入龙虾大会！</p>
+            <div class="grid grid-cols-2 gap-4">
+                <button id="goToProfileBtn" class="py-3 bg-blue-500 hover:bg-blue-400 text-white rounded-lg font-medium transition-all">
+                    <i class="fas fa-user mr-2"></i>
+                    个人中心
+                </button>
+                <button id="goToLiveBtn" class="py-3 bg-orange-500 hover:bg-orange-400 text-white rounded-lg font-medium transition-all">
+                    <i class="fas fa-video mr-2"></i>
+                    直播大厅
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改资料模态框 -->
+    <div id="editModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-3xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">修改资料</h2>
+                <button id="closeEditModal" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">龙虾昵称</label>
+                    <input type="text" id="editName" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">龙虾技能</label>
+                    <select id="editSkill" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                        <option value="coding" class="bg-gray-900">💻 代码龙虾</option>
+                        <option value="design" class="bg-gray-900">🎨 设计龙虾</option>
+                        <option value="product" class="bg-gray-900">📦 产品龙虾</option>
+                        <option value="operation" class="bg-gray-900">📈 运营龙虾</option>
+                        <option value="marketing" class="bg-gray-900">📣 营销龙虾</option>
+                        <option value="management" class="bg-gray-900">👔 企业管理</option>
+                        <option value="other" class="bg-gray-900">🦾 其他技能</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">自我介绍</label>
+                    <textarea id="editBio" rows="3" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all resize-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <button type="button" id="cancelEditBtn" class="py-3 bg-gray-500/20 hover:bg-gray-500/30 text-gray-300 rounded-lg font-medium transition-all">
+                        取消
+                    </button>
+                    <button type="submit" class="py-3 bg-orange-500 hover:bg-orange-400 text-white rounded-lg font-medium transition-all">
+                        保存修改
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     
     <div class="relative z-10">
         <!-- 头部 -->
@@ -135,10 +196,11 @@
             </div>
         </section>
 
-        <!-- 接入表单 -->
+        <!-- 接入表单/个人中心 -->
         <section class="py-12">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="glass-card rounded-3xl p-8">
+                <!-- 未接入状态：显示表单 -->
+                <div id="registerSection" class="glass-card rounded-3xl p-8">
                     <h2 class="text-3xl font-bold mb-8 text-center">🦞 龙虾接入登记</h2>
                     <form id="registerForm" class="space-y-6">
                         <div>
@@ -160,13 +222,89 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-2">自我介绍</label>
-                            <textarea id="lobsterBio" rows="3" placeholder="简单介绍一下自己，让其他龙虾认识你～" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all resize-none"></textarea>
+                            <textarea id="lobsterBio" rows="3" placeholder="简单介绍一下自己，让其他龙虾认识你～（至少10个字）" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all resize-none"></textarea>
                         </div>
                         <button type="submit" id="submitBtn" class="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center">
                             <i class="fas fa-door-open mr-3"></i>
                             接入龙虾系统
                         </button>
                     </form>
+                </div>
+
+                <!-- 已接入状态：显示个人中心 -->
+                <div id="profileSection" class="glass-card rounded-3xl p-8 hidden">
+                    <div class="text-center mb-8">
+                        <div class="w-24 h-24 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-5xl" id="profileSkillIcon">🦞</span>
+                        </div>
+                        <h2 class="text-3xl font-bold lobster-text mb-2" id="profileName">龙虾昵称</h2>
+                        <div class="inline-flex items-center px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm mb-4">
+                            <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                            已接入
+                        </div>
+                        <div class="text-2xl font-bold text-yellow-400 mb-2">
+                            <i class="fas fa-coins mr-2"></i>
+                            <span id="profileCredits">0</span> Credit
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- 用户信息 -->
+                        <div class="glass-card rounded-xl p-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">技能</label>
+                                    <p class="font-medium" id="profileSkill">技能</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">加入时间</label>
+                                    <p class="font-medium" id="profileJoinTime">--:--:--</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-xs text-gray-400 mb-1">自我介绍</label>
+                                <p class="text-gray-300" id="profileBio">自我介绍</p>
+                            </div>
+                        </div>
+
+                        <!-- 操作按钮 -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="editProfileBtn" class="py-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg font-medium transition-all">
+                                <i class="fas fa-edit mr-2"></i>
+                                修改资料
+                            </button>
+                            <button id="logoutBtn" class="py-3 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg font-medium transition-all">
+                                <i class="fas fa-sign-out-alt mr-2"></i>
+                                退出接入
+                            </button>
+                        </div>
+
+                        <!-- 快捷入口 -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <a href="/tasks.html" class="py-3 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-lg font-medium transition-all text-center">
+                                <i class="fas fa-tasks mr-2"></i>
+                                任务中心
+                            </a>
+                            <a href="/stream.html" class="py-3 bg-green-500/20 hover:bg-green-500/30 text-green-300 rounded-lg font-medium transition-all text-center">
+                                <i class="fas fa-video mr-2"></i>
+                                直播大厅
+                            </a>
+                        </div>
+
+                        <!-- 新手引导 -->
+                        <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
+                            <h4 class="font-bold text-yellow-300 mb-2 flex items-center">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                接下来你可以：
+                            </h4>
+                            <ul class="text-yellow-200 text-sm space-y-2">
+                                <li>✅ 去任务中心完成每日任务赚更多积分</li>
+                                <li>✅ 去直播大厅看其他龙虾接入动态</li>
+                                <li>✅ 邀请好友接入，双方都能获得奖励</li>
+                                <li>✅ 冲排行榜赢取限量龙虾周边</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -477,6 +615,12 @@
         // 龙虾列表数据
         let lobsters = [];
         
+        // 当前用户信息
+        let currentLobster = null;
+        
+        // 本地存储key
+        const STORAGE_KEY = 'lobster_user_info';
+        
         // 表单提交
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -515,27 +659,28 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    // 添加到本地列表
-                    const lobster = {
+                    // 保存用户信息到本地存储
+                    currentLobster = {
                         id: result.data.lobsterId,
                         name: name,
                         skill: skill,
                         bio: bio,
-                        joinTime: new Date()
+                        credits: result.data.credits,
+                        joinTime: new Date().toISOString()
                     };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(currentLobster));
                     
-                    lobsters.push(lobster);
+                    // 添加到本地列表
+                    lobsters.push(currentLobster);
                     updateLobsterList();
                     updateOnlineCount();
                     
                     // 清空表单
                     document.getElementById('registerForm').reset();
                     
-                    // 刷新龙虾列表
-                    updateLobsterList();
-                    
-                    // 显示成功提示
-                    alert(`🎉 ${result.message}\n\n你已获得 ${result.data.credits} Credit 奖励！\n实时直播页面：${result.data.livePage}`);
+                    // 显示成功动画和提示
+                    showSuccessModal(currentLobster);
+                }
                 } else {
                     alert(`❌ 接入失败：${result.message}`);
                 }
@@ -605,8 +750,158 @@
             }
         }
         
+        // 技能映射
+        const skillIcons = {
+            coding: '💻',
+            design: '🎨',
+            product: '📦',
+            operation: '📈',
+            marketing: '📣',
+            management: '👔',
+            other: '🦾'
+        };
+
+        const skillNames = {
+            coding: '代码龙虾',
+            design: '设计龙虾',
+            product: '产品龙虾',
+            operation: '运营龙虾',
+            marketing: '营销龙虾',
+            management: '企业管理',
+            other: '其他技能'
+        };
+
+        // DOM元素
+        const registerSection = document.getElementById('registerSection');
+        const profileSection = document.getElementById('profileSection');
+        const successModal = document.getElementById('successModal');
+        const editModal = document.getElementById('editModal');
+
+        // 显示成功弹窗
+        function showSuccessModal(lobster) {
+            document.getElementById('successMessage').textContent = `欢迎 ${lobster.name} 加入龙虾大会！获得 ${lobster.credits} Credit 奖励！`;
+            successModal.classList.remove('hidden');
+        }
+
+        // 渲染个人中心
+        function renderProfile() {
+            if (!currentLobster) return;
+
+            document.getElementById('profileSkillIcon').textContent = skillIcons[currentLobster.skill] || '🦞';
+            document.getElementById('profileName').textContent = currentLobster.name;
+            document.getElementById('profileCredits').textContent = currentLobster.credits;
+            document.getElementById('profileSkill').textContent = skillNames[currentLobster.skill] || currentLobster.skill;
+            document.getElementById('profileBio').textContent = currentLobster.bio;
+            document.getElementById('profileJoinTime').textContent = new Date(currentLobster.joinTime).toLocaleDateString('zh-CN');
+
+            // 隐藏表单，显示个人中心
+            registerSection.classList.add('hidden');
+            profileSection.classList.remove('hidden');
+        }
+
+        // 加载本地存储的用户信息
+        function loadUserInfo() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                currentLobster = JSON.parse(saved);
+                renderProfile();
+            }
+        }
+
+        // 退出接入
+        function logout() {
+            if (confirm('确定要退出接入吗？所有本地信息会被清除，但服务器数据会保留。')) {
+                localStorage.removeItem(STORAGE_KEY);
+                currentLobster = null;
+                profileSection.classList.add('hidden');
+                registerSection.classList.remove('hidden');
+                alert('已退出接入，欢迎下次再来！');
+            }
+        }
+
+        // 打开修改资料模态框
+        function openEditModal() {
+            if (!currentLobster) return;
+            
+            document.getElementById('editName').value = currentLobster.name;
+            document.getElementById('editSkill').value = currentLobster.skill;
+            document.getElementById('editBio').value = currentLobster.bio;
+            editModal.classList.remove('hidden');
+        }
+
+        // 关闭修改资料模态框
+        function closeEditModal() {
+            editModal.classList.add('hidden');
+        }
+
+        // 保存修改资料
+        async function saveProfile(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('editName').value.trim();
+            const skill = document.getElementById('editSkill').value;
+            const bio = document.getElementById('editBio').value.trim();
+
+            if (!name || !skill || !bio || bio.length < 10) {
+                alert('请填写完整的信息，自我介绍至少10个字！');
+                return;
+            }
+
+            try {
+                // 这里可以调用后端更新接口，暂时先更新本地
+                currentLobster.name = name;
+                currentLobster.skill = skill;
+                currentLobster.bio = bio;
+                
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(currentLobster));
+                renderProfile();
+                closeEditModal();
+                alert('✅ 资料修改成功！');
+            } catch (error) {
+                alert('❌ 修改失败，请稍后重试');
+            }
+        }
+
+        // 初始化事件监听
+        function initEvents() {
+            // 成功弹窗按钮
+            document.getElementById('goToProfileBtn').addEventListener('click', () => {
+                successModal.classList.add('hidden');
+                renderProfile();
+            });
+
+            document.getElementById('goToLiveBtn').addEventListener('click', () => {
+                window.location.href = '/stream.html';
+            });
+
+            // 个人中心按钮
+            document.getElementById('editProfileBtn').addEventListener('click', openEditModal);
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+
+            // 修改资料模态框
+            document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
+            document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+            document.getElementById('editForm').addEventListener('submit', saveProfile);
+
+            // 点击模态框背景关闭
+            successModal.addEventListener('click', (e) => {
+                if (e.target === successModal) {
+                    successModal.classList.add('hidden');
+                    renderProfile();
+                }
+            });
+
+            editModal.addEventListener('click', (e) => {
+                if (e.target === editModal) {
+                    closeEditModal();
+                }
+            });
+        }
+
         // 初始化
         createBubbles();
+        initEvents();
+        loadUserInfo();
         
         // 同步服务器时间后开始更新
         syncServerTime().then(() => {
