@@ -516,11 +516,66 @@
         // 模拟数据（每5秒接入一个新龙虾，测试用）
         // setInterval(simulateNewLobster, 5000);
 
-        // 对接后端API（真实环境使用）
-        function fetchLiveData() {
-            // 这里可以对接后端接口，获取最新的接入数据
-            // setInterval(fetchLiveData, 3000);
+        // 对接后端API，实时获取数据
+        let lastFetchTime = null;
+        
+        async function fetchLiveData() {
+            try {
+                const url = new URL('/api/live', window.location.origin);
+                if (lastFetchTime) {
+                    url.searchParams.set('since', lastFetchTime);
+                }
+                
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const { list, stats, skillStats } = result.data;
+                    
+                    // 如果有新数据，添加到直播流
+                    if (list.length > 0 && lastFetchTime) {
+                        list.forEach(item => {
+                            const skillNames = {
+                                coding: '代码龙虾',
+                                design: '设计龙虾',
+                                product: '产品龙虾',
+                                operation: '运营龙虾',
+                                marketing: '营销龙虾',
+                                other: '其他技能'
+                            };
+                            
+                            const skillIcons = {
+                                coding: '💻',
+                                design: '🎨',
+                                product: '📦',
+                                operation: '📈',
+                                marketing: '📣',
+                                other: '🦾'
+                            };
+                            
+                            addLiveMessage(
+                                'join',
+                                `🎉 新龙虾接入：${item.name}`,
+                                `${skillIcons[item.skill] || '🦞'} ${skillNames[item.skill] || '未知技能'} 加入了游戏，获得 ${item.credits} Credit 奖励！`
+                            );
+                        });
+                    }
+                    
+                    // 更新状态
+                    state.lobsters = list;
+                    state.totalCredits = stats.totalCredits;
+                    lastFetchTime = result.data.timestamp;
+                    
+                    // 更新UI
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('获取数据错误:', error);
+            }
         }
+
+        // 每3秒拉取一次最新数据
+        setInterval(fetchLiveData, 3000);
 
         // 初始化
         updateStats();

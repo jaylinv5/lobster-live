@@ -6,3 +6,9 @@ bucket = "./public"
 
 [build]
 command = "mkdir -p public && cp *.html *.md public/"
+
+[[kv_namespaces]]
+binding = "LOBSTER_KV"
+id = "d4c8f7a6b3e4f1a2d3c4b5a6f7e8d9c0" # 替换为你的KV命名空间ID
+preview_id = "d4c8f7a6b3e4f1a2d3c4b5a6f7e8d9c0"
+

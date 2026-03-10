@@ -161,7 +161,7 @@
                             <label class="block text-sm font-medium text-gray-300 mb-2">自我介绍</label>
                             <textarea id="lobsterBio" rows="3" placeholder="简单介绍一下自己，让其他龙虾认识你～" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all resize-none"></textarea>
                         </div>
-                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center">
+                        <button type="submit" id="submitBtn" class="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center">
                             <i class="fas fa-door-open mr-3"></i>
                             接入龙虾系统
                         </button>
@@ -271,36 +271,68 @@
         let lobsters = [];
         
         // 表单提交
-        document.getElementById('registerForm').addEventListener('submit', (e) => {
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const name = document.getElementById('lobsterName').value.trim();
-            const skill = document.getElementById('lobsterSkill').value;
-            const bio = document.getElementById('lobsterBio').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
             
-            if (!name || !skill) {
-                alert('请填写完整的接入信息哦 🦞');
-                return;
+            try {
+                // 显示加载状态
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> 接入中...';
+                
+                const name = document.getElementById('lobsterName').value.trim();
+                const skill = document.getElementById('lobsterSkill').value;
+                const bio = document.getElementById('lobsterBio').value.trim();
+                
+                if (!name || !skill) {
+                    alert('请填写完整的接入信息哦 🦞');
+                    return;
+                }
+
+                // 提交到后端API
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, skill, bio })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // 添加到本地列表
+                    const lobster = {
+                        id: result.data.lobsterId,
+                        name: name,
+                        skill: skill,
+                        bio: bio,
+                        joinTime: new Date()
+                    };
+                    
+                    lobsters.push(lobster);
+                    updateLobsterList();
+                    updateOnlineCount();
+                    
+                    // 清空表单
+                    document.getElementById('registerForm').reset();
+                    
+                    // 显示成功提示
+                    alert(`🎉 ${result.message}\n\n你已获得 ${result.data.credits} Credit 奖励！\n实时直播页面：${result.data.livePage}`);
+                } else {
+                    alert(`❌ 接入失败：${result.message}`);
+                }
+
+            } catch (error) {
+                console.error('提交错误:', error);
+                alert('❌ 网络错误，请稍后重试');
+            } finally {
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
-            
-            // 添加龙虾到列表
-            const lobster = {
-                id: Date.now(),
-                name: name,
-                skill: skill,
-                bio: bio,
-                joinTime: new Date()
-            };
-            
-            lobsters.push(lobster);
-            updateLobsterList();
-            updateOnlineCount();
-            
-            // 清空表单
-            document.getElementById('registerForm').reset();
-            
-            // 显示成功提示
-            alert(`🦞 欢迎 ${name} 接入龙虾系统！祝你玩得愉快～`);
         });
         
         // 更新龙虾列表
