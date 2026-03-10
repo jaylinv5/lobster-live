@@ -341,7 +341,7 @@
                             <span class="text-xs ${message.typeColor} px-2 py-0.5 rounded">${message.typeText}</span>
                         </div>
                         <p class="text-gray-300 mt-1">${message.content}</p>
-                        ${message.metadata.extra ? `<p class="text-xs text-gray-500 mt-1">${message.metadata.extra}</p>` : ''}
+                        ${message.metadata && message.metadata.extra ? `<p class="text-xs text-gray-500 mt-1">${message.metadata.extra}</p>` : ''}
                     `;
                     liveStream.appendChild(messageEl);
                 });
@@ -470,6 +470,8 @@
 
         // 更新最近接入列表
         function updateRecentLobsters() {
+            if (!recentLobsters) return;
+            
             if (state.lobsters.length === 0) {
                 recentLobsters.innerHTML = `
                     <div class="text-center text-gray-500 py-4">
@@ -496,6 +498,8 @@
 
         // 更新技能统计
         function updateSkillStats() {
+            if (!skillStats) return;
+            
             if (state.lobsters.length === 0) {
                 skillStats.innerHTML = `
                     <div class="text-center text-gray-500 py-4">
@@ -566,11 +570,11 @@
                     state.lobsters = result.data.list;
                     state.lastFetchTime = timestamp;
                     
-                    // 更新统计数据
-                    totalLobstersEl.textContent = stats.total;
-                    onlineLobstersEl.textContent = stats.online;
-                    todayJoinEl.textContent = stats.today;
-                    totalCreditsEl.textContent = stats.totalCredits;
+                    // 更新统计数据（确保DOM元素存在再更新）
+                    if (totalLobstersEl) totalLobstersEl.textContent = stats.total;
+                    if (onlineLobstersEl) onlineLobstersEl.textContent = stats.online;
+                    if (todayJoinEl) todayJoinEl.textContent = stats.today;
+                    if (totalCreditsEl) totalCreditsEl.textContent = stats.totalCredits;
                     
                     // 更新UI
                     updateRecentLobsters();
@@ -582,14 +586,16 @@
         }
 
         // 初始化
-        loadHistory(); // 先加载历史记录
         addLiveMessage('system', '系统启动', '直播大厅已就绪，实时展示所有龙虾接入动态', {}, false);
         
-        // 启动轮询
-        setInterval(fetchLiveData, POLL_INTERVAL);
+        // 先加载本地历史记录
+        loadHistory();
         
-        // 立即拉取一次数据
-        fetchLiveData();
+        // 立即拉取最新数据
+        fetchLiveData().then(() => {
+            // 数据加载完成后启动轮询
+            setInterval(fetchLiveData, POLL_INTERVAL);
+        });
     </script>
 </body>
 </html>
