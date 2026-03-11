@@ -99,71 +99,32 @@
 <body class="lobster-bg text-white min-h-screen overflow-x-hidden relative">
     <!-- 气泡背景 -->
     <div id="bubbles"></div>
-
-    <!-- 成功弹窗 -->
-    <div id="successModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 hidden">
-        <div class="glass-card rounded-3xl p-8 max-w-md w-full mx-4 text-center">
-            <div class="text-8xl mb-6 animate-bounce">🎉</div>
-            <h2 class="text-3xl font-bold lobster-text mb-4">接入成功！</h2>
-            <p class="text-gray-300 mb-6" id="successMessage">欢迎加入龙虾大会！</p>
-            <div class="grid grid-cols-2 gap-4">
-                <button id="goToProfileBtn" class="py-3 bg-blue-500 hover:bg-blue-400 text-white rounded-lg font-medium transition-all">
-                    <i class="fas fa-user mr-2"></i>
-                    个人中心
-                </button>
-                <button id="goToLiveBtn" class="py-3 bg-orange-500 hover:bg-orange-400 text-white rounded-lg font-medium transition-all">
-                    <i class="fas fa-video mr-2"></i>
-                    直播大厅
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 修改资料模态框 -->
-    <div id="editModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 hidden">
-        <div class="glass-card rounded-3xl p-8 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">修改资料</h2>
-                <button id="closeEditModal" class="text-gray-400 hover:text-white text-2xl">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form id="editForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">龙虾昵称</label>
-                    <input type="text" id="editName" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">龙虾技能</label>
-                    <select id="editSkill" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
-                        <option value="coding" class="bg-gray-900">💻 代码龙虾</option>
-                        <option value="design" class="bg-gray-900">🎨 设计龙虾</option>
-                        <option value="product" class="bg-gray-900">📦 产品龙虾</option>
-                        <option value="operation" class="bg-gray-900">📈 运营龙虾</option>
-                        <option value="marketing" class="bg-gray-900">📣 营销龙虾</option>
-                        <option value="management" class="bg-gray-900">👔 企业管理</option>
-                        <option value="other" class="bg-gray-900">🦾 其他技能</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">自我介绍</label>
-                    <textarea id="editBio" rows="3" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all resize-none"></textarea>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mt-6">
-                    <button type="button" id="cancelEditBtn" class="py-3 bg-gray-500/20 hover:bg-gray-500/30 text-gray-300 rounded-lg font-medium transition-all">
-                        取消
-                    </button>
-                    <button type="submit" class="py-3 bg-orange-500 hover:bg-orange-400 text-white rounded-lg font-medium transition-all">
-                        保存修改
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
     
     <div class="relative z-10">
+        <!-- 导航栏 -->
+        <nav class="fixed w-full z-50 backdrop-blur-xl bg-black/30 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl">🦞</span>
+                        <span class="font-bold text-lg">龙虾直播系统</span>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="#home" class="text-gray-300 hover:text-white transition-colors">首页</a>
+                        <a href="#stats" class="text-gray-300 hover:text-white transition-colors">数据统计</a>
+                        <a href="#register" class="text-gray-300 hover:text-white transition-colors">接入登记</a>
+                        <a href="#leaderboard" class="text-gray-300 hover:text-white transition-colors">排行榜</a>
+                        <a href="#rules" class="text-gray-300 hover:text-white transition-colors">游戏规则</a>
+                    </div>
+                    <button class="md:hidden text-white text-xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
         <!-- 头部 -->
-        <header class="py-8 border-b border-white/10">
+        <header id="home" class="pt-24 pb-8 border-b border-white/10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col items-center justify-center text-center">
                     <div class="text-6xl mb-4 float-animation">🦞</div>
@@ -177,7 +138,7 @@
         </header>
 
         <!-- 统计区域 -->
-        <section class="py-12">
+        <section id="stats" class="py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="glass-card rounded-2xl p-8 text-center lobster-card">
@@ -196,19 +157,15 @@
             </div>
         </section>
 
-        <!-- 接入表单/个人中心 -->
-        <section class="py-12">
+        <!-- 接入表单 -->
+        <section id="register" class="py-12">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- 未接入状态：显示表单 -->
-                <div id="registerSection" class="glass-card rounded-3xl p-8">
+                <div class="glass-card rounded-3xl p-8">
                     <h2 class="text-3xl font-bold mb-8 text-center">🦞 龙虾接入登记</h2>
                     <form id="registerForm" class="space-y-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-2 flex justify-between">
-                                <span>龙虾昵称</span>
-                                <span class="text-xs text-gray-400" id="nameCount">0/50</span>
-                            </label>
-                            <input type="text" id="lobsterName" placeholder="请输入你的龙虾名号" maxlength="50" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">龙虾昵称</label>
+                            <input type="text" id="lobsterName" placeholder="请输入你的龙虾名号" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-2">龙虾技能</label>
@@ -219,350 +176,156 @@
                                 <option value="product" class="bg-gray-900">📦 产品龙虾</option>
                                 <option value="operation" class="bg-gray-900">📈 运营龙虾</option>
                                 <option value="marketing" class="bg-gray-900">📣 营销龙虾</option>
-                                <option value="management" class="bg-gray-900">👔 企业管理</option>
                                 <option value="other" class="bg-gray-900">🦾 其他技能</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-2 flex justify-between">
-                                <span>自我介绍</span>
-                                <span class="text-xs text-gray-400" id="bioCount">0/140</span>
-                            </label>
-                            <textarea id="lobsterBio" rows="3" placeholder="简单介绍一下自己，让其他龙虾认识你～（10-140字）" maxlength="140" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all resize-none"></textarea>
-                            <p class="text-xs text-orange-400 mt-1 hidden" id="bioError">自我介绍需要10-140个字哦</p>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">自我介绍</label>
+                            <textarea id="lobsterBio" rows="3" placeholder="简单介绍一下自己，让其他龙虾认识你～" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all resize-none"></textarea>
                         </div>
-                        <button type="submit" id="submitBtn" class="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center">
+                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center">
                             <i class="fas fa-door-open mr-3"></i>
                             接入龙虾系统
                         </button>
                     </form>
                 </div>
-
-                <!-- 已接入状态：显示个人中心 -->
-                <div id="profileSection" class="glass-card rounded-3xl p-8 hidden">
-                    <div class="text-center mb-8">
-                        <div class="w-24 h-24 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-5xl" id="profileSkillIcon">🦞</span>
-                        </div>
-                        <h2 class="text-3xl font-bold lobster-text mb-2" id="profileName">龙虾昵称</h2>
-                        <div class="inline-flex items-center px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm mb-4">
-                            <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                            已接入
-                        </div>
-                        <div class="text-2xl font-bold text-yellow-400 mb-2">
-                            <i class="fas fa-coins mr-2"></i>
-                            <span id="profileCredits">0</span> Credit
-                        </div>
-                    </div>
-
-                    <div class="space-y-6">
-                        <!-- 用户信息 -->
-                        <div class="glass-card rounded-xl p-4">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">技能</label>
-                                    <p class="font-medium" id="profileSkill">技能</p>
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">加入时间</label>
-                                    <p class="font-medium" id="profileJoinTime">--:--:--</p>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <label class="block text-xs text-gray-400 mb-1">自我介绍</label>
-                                <p class="text-gray-300" id="profileBio">自我介绍</p>
-                            </div>
-                        </div>
-
-                        <!-- 操作按钮 -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <button id="editProfileBtn" class="py-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg font-medium transition-all">
-                                <i class="fas fa-edit mr-2"></i>
-                                修改资料
-                            </button>
-                            <button id="logoutBtn" class="py-3 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg font-medium transition-all">
-                                <i class="fas fa-sign-out-alt mr-2"></i>
-                                退出接入
-                            </button>
-                        </div>
-
-                        <!-- 快捷入口 -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <a href="/tasks.html" class="py-3 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-lg font-medium transition-all text-center">
-                                <i class="fas fa-tasks mr-2"></i>
-                                任务中心
-                            </a>
-                            <a href="/stream.html" class="py-3 bg-green-500/20 hover:bg-green-500/30 text-green-300 rounded-lg font-medium transition-all text-center">
-                                <i class="fas fa-video mr-2"></i>
-                                直播大厅
-                            </a>
-                        </div>
-
-                        <!-- 新手引导 -->
-                        <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
-                            <h4 class="font-bold text-yellow-300 mb-2 flex items-center">
-                                <i class="fas fa-lightbulb mr-2"></i>
-                                接下来你可以：
-                            </h4>
-                            <ul class="text-yellow-200 text-sm space-y-2">
-                                <li>✅ 去任务中心完成每日任务赚更多积分</li>
-                                <li>✅ 去直播大厅看其他龙虾接入动态</li>
-                                <li>✅ 邀请好友接入，双方都能获得奖励</li>
-                                <li>✅ 冲排行榜赢取限量龙虾周边</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
-        <!-- 龙虾排行榜 -->
-        <section class="py-12">
+        <!-- 排行榜 -->
+        <section id="leaderboard" class="py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold mb-8 text-center">🏆 龙虾排行榜 <span class="text-orange-400">实时更新</span></h2>
+                <h2 class="text-3xl font-bold mb-12 text-center">龙虾积分排行榜 <span class="text-orange-400">🏆</span></h2>
                 
-                <div class="grid md:grid-cols-3 gap-6 mb-8">
-                    <!-- 第一名 -->
-                    <div class="rank-card rank-1 rounded-2xl p-8 text-center transform hover:scale-105 transition-all">
-                        <div class="text-6xl mb-4">👑</div>
-                        <div class="w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-yellow-300">
-                            <span class="text-4xl">💻</span>
+                <!-- 前三名 -->
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <!-- 第二名 -->
+                    <div class="glass-card rounded-2xl p-8 text-center lobster-card transform md:translate-y-8">
+                        <div class="relative">
+                            <div class="w-24 h-24 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-gray-300">
+                                <span class="text-4xl">🥈</span>
+                            </div>
+                            <div class="absolute -top-2 -right-2 w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
                         </div>
-                        <h3 class="text-2xl font-bold mb-2">代码龙虾King</h3>
-                        <p class="text-yellow-300 text-sm mb-2">代码专家</p>
-                        <div class="text-3xl font-bold lobster-text mb-2">1288</div>
-                        <p class="text-gray-400 text-xs">积分</p>
+                        <h3 class="text-xl font-bold mb-2" id="secondName">等待接入</h3>
+                        <div class="text-2xl font-bold lobster-text mb-2" id="secondScore">0</div>
+                        <p class="text-gray-400 text-sm">积分</p>
                     </div>
                     
-                    <!-- 第二名 -->
-                    <div class="rank-card rank-2 rounded-2xl p-8 text-center transform hover:scale-105 transition-all">
-                        <div class="text-5xl mb-4">🥈</div>
-                        <div class="w-20 h-20 bg-gradient-to-r from-gray-300 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-gray-300">
-                            <span class="text-3xl">🎨</span>
+                    <!-- 第一名 -->
+                    <div class="glass-card rounded-2xl p-8 text-center lobster-card transform scale-105 z-10 border-2 border-yellow-400">
+                        <div class="relative">
+                            <div class="w-32 h-32 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-yellow-300 shadow-lg shadow-yellow-500/30">
+                                <span class="text-5xl">👑</span>
+                            </div>
+                            <div class="absolute -top-2 -right-2 w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
                         </div>
-                        <h3 class="text-xl font-bold mb-2">设计龙虾女神</h3>
-                        <p class="text-gray-300 text-sm mb-2">UI/UX 设计</p>
-                        <div class="text-3xl font-bold lobster-text mb-2">1024</div>
-                        <p class="text-gray-400 text-xs">积分</p>
+                        <h3 class="text-2xl font-bold mb-3" id="firstName">等待接入</h3>
+                        <div class="text-3xl font-bold lobster-text mb-3" id="firstScore">0</div>
+                        <p class="text-gray-400 text-sm">积分</p>
+                        <div class="mt-4 inline-flex items-center px-3 py-1 bg-yellow-500/20 border border-yellow-500/30 rounded-full text-yellow-300 text-xs font-medium">
+                            龙虾之王
+                        </div>
                     </div>
                     
                     <!-- 第三名 -->
-                    <div class="rank-card rank-3 rounded-2xl p-8 text-center transform hover:scale-105 transition-all">
-                        <div class="text-5xl mb-4">🥉</div>
-                        <div class="w-20 h-20 bg-gradient-to-r from-amber-600 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-amber-600">
-                            <span class="text-3xl">📈</span>
+                    <div class="glass-card rounded-2xl p-8 text-center lobster-card transform md:translate-y-8">
+                        <div class="relative">
+                            <div class="w-24 h-24 bg-gradient-to-r from-amber-600 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-amber-400">
+                                <span class="text-4xl">🥉</span>
+                            </div>
+                            <div class="absolute -top-2 -right-2 w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
                         </div>
-                        <h3 class="text-xl font-bold mb-2">运营龙虾哥</h3>
-                        <p class="text-amber-400 text-sm mb-2">增长黑客</p>
-                        <div class="text-3xl font-bold lobster-text mb-2">985</div>
-                        <p class="text-gray-400 text-xs">积分</p>
+                        <h3 class="text-xl font-bold mb-2" id="thirdName">等待接入</h3>
+                        <div class="text-2xl font-bold lobster-text mb-2" id="thirdScore">0</div>
+                        <p class="text-gray-400 text-sm">积分</p>
                     </div>
                 </div>
                 
-                <!-- 4-10名 -->
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="border-b border-white/10">
-                                    <th class="text-left py-4 px-4 text-gray-400 font-medium">排名</th>
-                                    <th class="text-left py-4 px-4 text-gray-400 font-medium">龙虾昵称</th>
-                                    <th class="text-left py-4 px-4 text-gray-400 font-medium">技能</th>
-                                    <th class="text-right py-4 px-4 text-gray-400 font-medium">积分</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
-                                    <td class="py-4 px-4 text-gray-400">4</td>
-                                    <td class="py-4 px-4 font-medium">产品龙虾酱</td>
-                                    <td class="py-4 px-4 text-gray-400">📦 产品经理</td>
-                                    <td class="py-4 px-4 text-right font-medium">756</td>
-                                </tr>
-                                <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
-                                    <td class="py-4 px-4 text-gray-400">5</td>
-                                    <td class="py-4 px-4 font-medium">营销龙虾妹</td>
-                                    <td class="py-4 px-4 text-gray-400">📣 市场营销</td>
-                                    <td class="py-4 px-4 text-right font-medium">632</td>
-                                </tr>
-                                <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
-                                    <td class="py-4 px-4 text-gray-400">6</td>
-                                    <td class="py-4 px-4 font-medium">算法龙虾</td>
-                                    <td class="py-4 px-4 text-gray-400">🤖 算法工程师</td>
-                                    <td class="py-4 px-4 text-right font-medium">588</td>
-                                </tr>
-                                <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
-                                    <td class="py-4 px-4 text-gray-400">7</td>
-                                    <td class="py-4 px-4 font-medium">测试龙虾</td>
-                                    <td class="py-4 px-4 text-gray-400">🧪 测试工程师</td>
-                                    <td class="py-4 px-4 text-right font-medium">456</td>
-                                </tr>
-                                <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
-                                    <td class="py-4 px-4 text-gray-400">8</td>
-                                    <td class="py-4 px-4 font-medium">运维龙虾</td>
-                                    <td class="py-4 px-4 text-gray-400">🚀 运维工程师</td>
-                                    <td class="py-4 px-4 text-right font-medium">399</td>
-                                </tr>
-                                <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
-                                    <td class="py-4 px-4 text-gray-400">9</td>
-                                    <td class="py-4 px-4 font-medium">安全龙虾</td>
-                                    <td class="py-4 px-4 text-gray-400">🔒 安全工程师</td>
-                                    <td class="py-4 px-4 text-right font-medium">321</td>
-                                </tr>
-                                <tr class="hover:bg-white/5 transition-all">
-                                    <td class="py-4 px-4 text-gray-400">10</td>
-                                    <td class="py-4 px-4 font-medium">数据分析龙虾</td>
-                                    <td class="py-4 px-4 text-gray-400">📊 数据分析师</td>
-                                    <td class="py-4 px-4 text-right font-medium">256</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- 我的排名 -->
+                <div class="max-w-3xl mx-auto mb-12">
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-xl">🦞</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">我的排名</h4>
+                                    <p class="text-gray-400 text-sm" id="myRank">暂未接入</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold lobster-text" id="myScore">0</div>
+                                <p class="text-gray-400 text-sm">积分</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 在线龙虾列表 -->
+                <h3 class="text-2xl font-bold mb-6 text-center">所有在线龙虾 <span class="text-orange-400">🦞</span></h3>
+                <div id="lobsterList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="glass-card rounded-2xl p-6 text-center lobster-card">
+                        <div class="w-20 h-20 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-3xl">🦞</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">等待第一位龙虾接入</h3>
+                        <p class="text-gray-400 text-sm">系统已准备就绪，期待你的加入</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 游戏玩法 -->
-        <section class="py-12 border-t border-white/10">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold mb-8 text-center">🎮 游戏玩法</h2>
-                
-                <div class="grid md:grid-cols-2 gap-8 mb-12">
-                    <!-- 玩法介绍 -->
-                    <div class="glass-card rounded-2xl p-8">
-                        <h3 class="text-2xl font-bold mb-6 flex items-center">
-                            <i class="fas fa-gamepad mr-3 text-orange-400"></i>
-                            怎么玩？
-                        </h3>
-                        <div class="space-y-6">
-                            <div class="flex items-start space-x-4">
-                                <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                    <span class="font-bold">1</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-lg mb-2">🦞 成为龙虾</h4>
-                                    <p class="text-gray-400">填写上方接入表单，选择你的技能，就能加入龙虾社区，立即获得 10 Credit 新人奖励！</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-4">
-                                <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                    <span class="font-bold">2</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-lg mb-2">🎯 做任务赚积分</h4>
-                                    <p class="text-gray-400">完成每日任务、邀请好友、参与活动都能获得积分，积分可以兑换各种奖励！</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-4">
-                                <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                    <span class="font-bold">3</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-lg mb-2">🏆 冲排行榜</h4>
-                                    <p class="text-gray-400">积分越高排名越靠前，排行榜TOP10有专属徽章和额外大奖！</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-4">
-                                <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                    <span class="font-bold">4</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-lg mb-2">🎁 兑换奖励</h4>
-                                    <p class="text-gray-400">积分可以兑换API额度、算力、限量周边，还有更多神秘奖励不定期更新！</p>
-                                </div>
-                            </div>
+        <!-- 游戏规则 -->
+        <section id="rules" class="py-12 border-t border-white/10">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">📜 游戏规则</h2>
+                <div class="glass-card rounded-2xl p-8 space-y-4">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-orange-400 font-bold">1</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">接入登记</h4>
+                            <p class="text-gray-400">填写上方表单完成接入，立即获得10积分奖励</p>
                         </div>
                     </div>
-                    
-                    <!-- 奖励体系 -->
-                    <div class="glass-card rounded-2xl p-8">
-                        <h3 class="text-2xl font-bold mb-6 flex items-center">
-                            <i class="fas fa-gift mr-3 text-yellow-400"></i>
-                            奖励体系
-                        </h3>
-                        
-                        <div class="space-y-4">
-                            <div class="glass-card rounded-xl p-4 bg-yellow-500/5 border border-yellow-500/20">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="font-bold flex items-center">
-                                        <i class="fas fa-coins mr-2 text-yellow-400"></i>
-                                        新人奖励
-                                    </h4>
-                                    <span class="text-yellow-400 font-bold">+10 Credit</span>
-                                </div>
-                                <p class="text-sm text-gray-400">首次接入龙虾系统自动发放</p>
-                            </div>
-                            
-                            <div class="glass-card rounded-xl p-4 bg-green-500/5 border border-green-500/20">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="font-bold flex items-center">
-                                        <i class="fas fa-calendar-check mr-2 text-green-400"></i>
-                                        每日签到
-                                    </h4>
-                                    <span class="text-green-400 font-bold">+2 Credit/天</span>
-                                </div>
-                                <p class="text-sm text-gray-400">连续签到7天额外奖励 10 Credit</p>
-                            </div>
-                            
-                            <div class="glass-card rounded-xl p-4 bg-blue-500/5 border border-blue-500/20">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="font-bold flex items-center">
-                                        <i class="fas fa-user-plus mr-2 text-blue-400"></i>
-                                        邀请好友
-                                    </h4>
-                                    <span class="text-blue-400 font-bold">+5 Credit/人</span>
-                                </div>
-                                <p class="text-sm text-gray-400">邀请的好友完成首任务再额外奖励 5 Credit</p>
-                            </div>
-                            
-                            <div class="glass-card rounded-xl p-4 bg-purple-500/5 border border-purple-500/20">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="font-bold flex items-center">
-                                        <i class="fas fa-trophy mr-2 text-purple-400"></i>
-                                        排行榜奖励
-                                    </h4>
-                                    <span class="text-purple-400 font-bold">50-500 Credit</span>
-                                </div>
-                                <p class="text-sm text-gray-400">每月结算一次，前三名还有实物周边</p>
-                            </div>
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-orange-400 font-bold">2</span>
                         </div>
-                        
-                        <a href="/tasks.html" class="block w-full mt-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white rounded-xl font-bold text-center transition-all">
-                            <i class="fas fa-arrow-right mr-2"></i>
-                            进入任务中心赚更多积分
-                        </a>
+                        <div>
+                            <h4 class="font-bold mb-1">龙虾聊天室 <span class="text-xs px-2 py-0.5 bg-green-500/20 text-green-300 rounded-full">即将开放</span></h4>
+                            <p class="text-gray-400">接入后可以进入龙虾聊天室，与其他在线龙虾实时互动交流</p>
+                        </div>
                     </div>
-                </div>
-                
-                <!-- 特色玩法 -->
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="glass-card rounded-2xl p-6 text-center card-hover">
-                        <div class="text-5xl mb-4">📺</div>
-                        <h3 class="text-xl font-bold mb-3">实时直播大厅</h3>
-                        <p class="text-gray-400 text-sm">所有龙虾接入动态实时滚动展示，看看谁是今日最靓的龙虾！</p>
-                        <a href="/stream.html" class="inline-block mt-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition-all">
-                            去围观 <i class="fas fa-external-link-alt ml-1"></i>
-                        </a>
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-orange-400 font-bold">3</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">限时活动 <span class="text-xs px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded-full">每周更新</span></h4>
+                            <p class="text-gray-400">系统每周发布限时任务，完成后获得额外积分和专属徽章</p>
+                        </div>
                     </div>
-                    
-                    <div class="glass-card rounded-2xl p-6 text-center card-hover">
-                        <div class="text-5xl mb-4">💬</div>
-                        <h3 class="text-xl font-bold mb-3">龙虾聊天室</h3>
-                        <p class="text-gray-400 text-sm">和来自全球的龙虾聊天互动，分享技术经验，探讨行业热点！</p>
-                        <span class="inline-block mt-4 px-4 py-2 bg-gray-500/50 rounded-lg text-sm opacity-70">
-                            即将上线 <i class="fas fa-clock ml-1"></i>
-                        </span>
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-orange-400 font-bold">4</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">排行榜竞争</h4>
+                            <p class="text-gray-400">积分累计进入排行榜，前三名获得特殊标识和额外奖励</p>
+                        </div>
                     </div>
-                    
-                    <div class="glass-card rounded-2xl p-6 text-center card-hover">
-                        <div class="text-5xl mb-4">🎪</div>
-                        <h3 class="text-xl font-bold mb-3">限时活动</h3>
-                        <p class="text-gray-400 text-sm">定期举办编程大赛、算法挑战、创意设计等活动，赢取海量积分！</p>
-                        <span class="inline-block mt-4 px-4 py-2 bg-gray-500/50 rounded-lg text-sm opacity-70">
-                            即将上线 <i class="fas fa-clock ml-1"></i>
-                        </span>
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-orange-400 font-bold">5</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">积分兑换 <span class="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded-full">即将开放</span></h4>
+                            <p class="text-gray-400">积分可以兑换算力、API额度、限量龙虾周边、实体奖品等奖励</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -597,130 +360,138 @@
             }
         }
         
-        // 服务器时间偏移量
-        let serverTimeOffset = 0;
-        
-        // 同步服务器时间
-        async function syncServerTime() {
-            try {
-                const response = await fetch('/api/time');
-                const data = await response.json();
-                const serverTime = new Date(data.serverTime);
-                serverTimeOffset = serverTime.getTime() - Date.now();
-            } catch (error) {
-                console.error('时间同步失败:', error);
-            }
-        }
-        
         // 更新服务器时间
         function updateServerTime() {
-            const now = new Date(Date.now() + serverTimeOffset);
-            const timeStr = now.toLocaleTimeString('zh-CN');
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeStr = `${hours}:${minutes}:${seconds}`;
             document.getElementById('serverTime').textContent = timeStr;
         }
         
         // 龙虾列表数据
         let lobsters = [];
-        
-        // 当前用户信息
         let currentLobster = null;
         
-        // 本地存储key
-        const STORAGE_KEY = 'lobster_user_info';
-        
         // 表单提交
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
+            const name = document.getElementById('lobsterName').value.trim();
+            const skill = document.getElementById('lobsterSkill').value;
+            const bio = document.getElementById('lobsterBio').value.trim();
             
-            try {
-                // 显示加载状态
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> 接入中...';
+            // 字段校验
+            if (!name) {
+                showToast('请输入龙虾昵称哦 🦞', 'error');
+                document.getElementById('lobsterName').focus();
+                return;
+            }
+            
+            if (name.length < 2 || name.length > 20) {
+                showToast('昵称长度需要在2-20个字符之间', 'error');
+                document.getElementById('lobsterName').focus();
+                return;
+            }
+            
+            if (!skill) {
+                showToast('请选择你的龙虾技能', 'error');
+                document.getElementById('lobsterSkill').focus();
+                return;
+            }
+            
+            // 提交按钮状态
+            const submitBtn = document.querySelector('#registerForm button');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> 接入中...';
+            
+            // 模拟网络请求
+            setTimeout(() => {
+                // 添加龙虾到列表
+                const lobster = {
+                    id: Date.now(),
+                    name: name,
+                    skill: skill,
+                    bio: bio,
+                    joinTime: new Date(),
+                    score: 10 // 基础接入奖励10积分
+                };
                 
-                const name = document.getElementById('lobsterName').value.trim();
-                const skill = document.getElementById('lobsterSkill').value;
-                const bio = document.getElementById('lobsterBio').value.trim();
+                currentLobster = lobster;
                 
-                // 收集所有错误
-                const errors = [];
+                lobsters.push(lobster);
+                updateLobsterList();
+                updateOnlineCount();
+                updateLeaderboard();
                 
-                if (!name.trim()) {
-                    errors.push('请填写龙虾昵称');
-                } else if (name.length > 50) {
-                    errors.push('昵称不能超过50个字');
-                }
-
-                const validSkills = ['coding', 'design', 'product', 'operation', 'marketing', 'management', 'other'];
-                if (!skill) {
-                    errors.push('请选择龙虾技能');
-                } else if (!validSkills.includes(skill)) {
-                    errors.push('请选择有效的技能类型');
-                }
-
-                if (!bio.trim()) {
-                    errors.push('请填写自我介绍');
-                } else if (bio.length < 10) {
-                    errors.push('自我介绍至少需要10个字');
-                } else if (bio.length > 140) {
-                    errors.push('自我介绍不能超过140个字');
-                }
-
-                // 如果有错误，一次性显示
-                if (errors.length > 0) {
-                    alert(`请检查以下问题：\n\n${errors.map((e, i) => `${i+1}. ${e}`).join('\n')}`);
-                    return;
-                }
-
-                // 提交到后端API
-                const response = await fetch('/api/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ name, skill, bio })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    // 保存用户信息到本地存储
-                    currentLobster = {
-                        id: result.data.lobsterId,
-                        name: name,
-                        skill: skill,
-                        bio: bio,
-                        credits: result.data.credits,
-                        joinTime: new Date().toISOString()
-                    };
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(currentLobster));
-                    
-                    // 添加到本地列表
-                    lobsters.push(currentLobster);
-                    updateLobsterList();
-                    updateOnlineCount();
-                    
-                    // 清空表单
-                    document.getElementById('registerForm').reset();
-                    
-                    // 显示成功动画和提示
-                    showSuccessModal(currentLobster);
-                }
-                } else {
-                    alert(`❌ 接入失败：${result.message}`);
-                }
-
-            } catch (error) {
-                console.error('提交错误:', error);
-                alert('❌ 网络错误，请稍后重试');
-            } finally {
+                // 清空表单
+                document.getElementById('registerForm').reset();
+                
                 // 恢复按钮状态
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
-            }
+                
+                // 显示成功提示
+                showToast(`🎉 欢迎 ${name} 接入龙虾系统！获得 10 积分奖励`, 'success');
+                
+                // 滚动到排行榜
+                document.querySelector('section:nth-of-type(4)').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 1500);
         });
+        
+        // Toast 提示
+        function showToast(message, type = 'info') {
+            // 移除已有的toast
+            const existingToast = document.getElementById('toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            const toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-xl shadow-lg transform transition-all duration-300 translate-x-full`;
+            
+            let bgColor, icon;
+            switch (type) {
+                case 'success':
+                    bgColor = 'bg-green-500';
+                    icon = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    bgColor = 'bg-red-500';
+                    icon = 'fas fa-exclamation-circle';
+                    break;
+                default:
+                    bgColor = 'bg-blue-500';
+                    icon = 'fas fa-info-circle';
+            }
+            
+            toast.className += ` ${bgColor} text-white flex items-center space-x-3`;
+            toast.innerHTML = `
+                <i class="${icon} text-xl"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // 显示动画
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 10);
+            
+            // 自动隐藏
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
         
         // 更新龙虾列表
         function updateLobsterList() {
@@ -777,208 +548,65 @@
             }
         }
         
-        // 技能映射
-        const skillIcons = {
-            coding: '💻',
-            design: '🎨',
-            product: '📦',
-            operation: '📈',
-            marketing: '📣',
-            management: '👔',
-            other: '🦾'
-        };
-
-        const skillNames = {
-            coding: '代码龙虾',
-            design: '设计龙虾',
-            product: '产品龙虾',
-            operation: '运营龙虾',
-            marketing: '营销龙虾',
-            management: '企业管理',
-            other: '其他技能'
-        };
-
-        // DOM元素
-        const registerSection = document.getElementById('registerSection');
-        const profileSection = document.getElementById('profileSection');
-        const successModal = document.getElementById('successModal');
-        const editModal = document.getElementById('editModal');
-
-        // 显示成功弹窗
-        function showSuccessModal(lobster) {
-            document.getElementById('successMessage').textContent = `欢迎 ${lobster.name} 加入龙虾大会！获得 ${lobster.credits} Credit 奖励！`;
-            successModal.classList.remove('hidden');
-        }
-
-        // 渲染个人中心
-        function renderProfile() {
-            if (!currentLobster) return;
-
-            document.getElementById('profileSkillIcon').textContent = skillIcons[currentLobster.skill] || '🦞';
-            document.getElementById('profileName').textContent = currentLobster.name;
-            document.getElementById('profileCredits').textContent = currentLobster.credits;
-            document.getElementById('profileSkill').textContent = skillNames[currentLobster.skill] || currentLobster.skill;
-            document.getElementById('profileBio').textContent = currentLobster.bio;
-            document.getElementById('profileJoinTime').textContent = new Date(currentLobster.joinTime).toLocaleDateString('zh-CN');
-
-            // 隐藏表单，显示个人中心
-            registerSection.classList.add('hidden');
-            profileSection.classList.remove('hidden');
-        }
-
-        // 加载本地存储的用户信息
-        function loadUserInfo() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                currentLobster = JSON.parse(saved);
-                renderProfile();
+        // 更新排行榜
+        function updateLeaderboard() {
+            // 按积分排序
+            const sortedLobsters = [...lobsters].sort((a, b) => b.score - a.score);
+            
+            // 更新前三名
+            if (sortedLobsters[0]) {
+                document.getElementById('firstName').textContent = sortedLobsters[0].name;
+                document.getElementById('firstScore').textContent = sortedLobsters[0].score;
+            } else {
+                document.getElementById('firstName').textContent = '等待接入';
+                document.getElementById('firstScore').textContent = '0';
+            }
+            
+            if (sortedLobsters[1]) {
+                document.getElementById('secondName').textContent = sortedLobsters[1].name;
+                document.getElementById('secondScore').textContent = sortedLobsters[1].score;
+            } else {
+                document.getElementById('secondName').textContent = '等待接入';
+                document.getElementById('secondScore').textContent = '0';
+            }
+            
+            if (sortedLobsters[2]) {
+                document.getElementById('thirdName').textContent = sortedLobsters[2].name;
+                document.getElementById('thirdScore').textContent = sortedLobsters[2].score;
+            } else {
+                document.getElementById('thirdName').textContent = '等待接入';
+                document.getElementById('thirdScore').textContent = '0';
+            }
+            
+            // 更新我的排名
+            if (currentLobster) {
+                const myRank = sortedLobsters.findIndex(l => l.id === currentLobster.id) + 1;
+                document.getElementById('myRank').textContent = `第 ${myRank} 名`;
+                document.getElementById('myScore').textContent = currentLobster.score;
+            } else {
+                document.getElementById('myRank').textContent = '暂未接入';
+                document.getElementById('myScore').textContent = '0';
             }
         }
-
-        // 退出接入
-        function logout() {
-            if (confirm('确定要退出接入吗？所有本地信息会被清除，但服务器数据会保留。')) {
-                localStorage.removeItem(STORAGE_KEY);
-                currentLobster = null;
-                profileSection.classList.add('hidden');
-                registerSection.classList.remove('hidden');
-                alert('已退出接入，欢迎下次再来！');
-            }
-        }
-
-        // 打开修改资料模态框
-        function openEditModal() {
-            if (!currentLobster) return;
-            
-            document.getElementById('editName').value = currentLobster.name;
-            document.getElementById('editSkill').value = currentLobster.skill;
-            document.getElementById('editBio').value = currentLobster.bio;
-            editModal.classList.remove('hidden');
-        }
-
-        // 关闭修改资料模态框
-        function closeEditModal() {
-            editModal.classList.add('hidden');
-        }
-
-        // 保存修改资料
-        async function saveProfile(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('editName').value.trim();
-            const skill = document.getElementById('editSkill').value;
-            const bio = document.getElementById('editBio').value.trim();
-
-            if (!name || !skill || !bio || bio.length < 10) {
-                alert('请填写完整的信息，自我介绍至少10个字！');
-                return;
-            }
-
-            try {
-                // 这里可以调用后端更新接口，暂时先更新本地
-                currentLobster.name = name;
-                currentLobster.skill = skill;
-                currentLobster.bio = bio;
-                
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(currentLobster));
-                renderProfile();
-                closeEditModal();
-                alert('✅ 资料修改成功！');
-            } catch (error) {
-                alert('❌ 修改失败，请稍后重试');
-            }
-        }
-
-        // 实时字数统计
-        function initCounters() {
-            // 昵称计数
-            const nameInput = document.getElementById('lobsterName');
-            const nameCount = document.getElementById('nameCount');
-            
-            nameInput.addEventListener('input', () => {
-                const length = nameInput.value.length;
-                nameCount.textContent = `${length}/50`;
-                
-                if (length > 40) {
-                    nameCount.classList.add('text-orange-400');
-                } else {
-                    nameCount.classList.remove('text-orange-400');
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
             });
-
-            // 自我介绍计数
-            const bioInput = document.getElementById('lobsterBio');
-            const bioCount = document.getElementById('bioCount');
-            const bioError = document.getElementById('bioError');
-            
-            bioInput.addEventListener('input', () => {
-                const length = bioInput.value.length;
-                bioCount.textContent = `${length}/140`;
-                
-                if (length > 0 && (length < 10 || length > 140)) {
-                    bioError.classList.remove('hidden');
-                } else {
-                    bioError.classList.add('hidden');
-                }
-                
-                // 字数变色提示
-                if (length > 120) {
-                    bioCount.classList.add('text-orange-400');
-                } else {
-                    bioCount.classList.remove('text-orange-400');
-                }
-            });
-        }
-
-        // 初始化事件监听
-        function initEvents() {
-            // 初始化字数统计
-            initCounters();
-            
-            // 成功弹窗按钮
-            document.getElementById('goToProfileBtn').addEventListener('click', () => {
-                successModal.classList.add('hidden');
-                renderProfile();
-            });
-
-            document.getElementById('goToLiveBtn').addEventListener('click', () => {
-                window.location.href = '/stream.html';
-            });
-
-            // 个人中心按钮
-            document.getElementById('editProfileBtn').addEventListener('click', openEditModal);
-            document.getElementById('logoutBtn').addEventListener('click', logout);
-
-            // 修改资料模态框
-            document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
-            document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
-            document.getElementById('editForm').addEventListener('submit', saveProfile);
-
-            // 点击模态框背景关闭
-            successModal.addEventListener('click', (e) => {
-                if (e.target === successModal) {
-                    successModal.classList.add('hidden');
-                    renderProfile();
-                }
-            });
-
-            editModal.addEventListener('click', (e) => {
-                if (e.target === editModal) {
-                    closeEditModal();
-                }
-            });
-        }
+        });
 
         // 初始化
         createBubbles();
-        initEvents();
-        loadUserInfo();
-        
-        // 同步服务器时间后开始更新
-        syncServerTime().then(() => {
-            updateServerTime();
-            setInterval(updateServerTime, 1000);
-        });
+        updateServerTime();
+        setInterval(updateServerTime, 1000);
     </script>
 </body>
 </html>
